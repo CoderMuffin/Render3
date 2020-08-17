@@ -7,6 +7,26 @@ using System.Threading.Tasks;
 
 namespace Render3.Core
 {
+    public struct Direction3
+    {
+        public double x, y, z;
+        public Direction3(double x, double y, double z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        public Direction3(Point3 p)
+        {
+            this.x = p.x;
+            this.y = p.y;
+            this.z = p.z;
+        }
+        public Point3 ToPoint3()
+        {
+            return new Point3(x, y, z);
+        }
+    }
     public struct Point2
     {
         public double x, y;
@@ -17,7 +37,7 @@ namespace Render3.Core
         }
         public Point ToPoint()
         {
-            return new Point((int)Math.Round(x), (int)Math.Round(y));
+            return new Point(Convert.ToInt32(x),Convert.ToInt32(y));
         }
         public override string ToString()
         {

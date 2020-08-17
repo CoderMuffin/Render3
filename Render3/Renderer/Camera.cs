@@ -1,20 +1,27 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Render3.Core
+using System.Windows.Forms;
+using Render3.Core;
+namespace Render3.Renderer
 {
     public enum CameraFovMode
     {
         Horizontal,
         Vertical
     }
+    public enum RenderMode
+    {
+        Wireframe=1,
+        Shaded=2
+    }
     public class Camera
     {
-        public Pen pen = new Pen(Color.Black);
+        public Pen pen = new Pen(System.Drawing.Color.Black);
         public Size screenSize { get { return ss; } set { ss = value; fov = fov; } }
         private Size ss;
         public CameraFovMode fovMode=CameraFovMode.Horizontal;
@@ -38,10 +45,9 @@ namespace Render3.Core
             }
         }
         private double eyeDist;
-        public Camera(double fov,Size screenSize)
+        public Camera(double fov)
         {
             this.fov = fov;
-            this.screenSize = screenSize;
         }
         public Point2 WorldToScreen(Point3 p)
         {
@@ -51,41 +57,48 @@ namespace Render3.Core
         {
             foreach (Mesh m in scene.meshes)
             {
-                foreach (Point3 p in m.geometry.vertices)
+                foreach (Point3 p in m.worldVertices)
                 {
                     try
                     {
-                        target.FillRectangle(new SolidBrush(Color.Black), new Rectangle(scene.camera.WorldToScreen(p).ToPoint(), new Size(1, 1)));
+                        //target.FillRectangle(new SolidBrush(System.Drawing.Color.Black), new Rectangle(WorldToScreen(p).ToPoint(), new Size(1, 1)));
                     }
                     catch (InvalidOperationException)
                     {
-                        Console.Write("Render3.Core.Camera.RenderVertices(): Display already in use");
+                        Console.Write("Render3.Renderer.Camera.RenderVertices(): Display already in use");
                     }
                 }
             }
         }
-        public void RenderFaces(Scene scene, Graphics target, IGeometry g)
+        public void RenderFaces(Scene scene, Bitmap b, Mesh m)
         {
-            foreach (Face f in g.triangles)
+            foreach (Face f in m.geometry.triangles)
             {
                 try
                 {
-                    target.DrawLine(pen, scene.camera.WorldToScreen(f.vertices[0]).ToPoint(), scene.camera.WorldToScreen(f.vertices[1]).ToPoint());
-                    target.DrawLine(pen, scene.camera.WorldToScreen(f.vertices[0]).ToPoint(), scene.camera.WorldToScreen(f.vertices[2]).ToPoint());
-                    target.DrawLine(pen, scene.camera.WorldToScreen(f.vertices[2]).ToPoint(), scene.camera.WorldToScreen(f.vertices[1]).ToPoint());
+                    using (Graphics target = Graphics.FromImage(b))
+                    {
+                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint());
+                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint());
+                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint());
+                    }
+
                 }
                 catch (InvalidOperationException)
                 {
-                    Console.Write("Render3.Core.Camera.RenderFaces(): Display already in use");
+                    Console.Write("Render3.Renderer.Camera.RenderFaces(): Display already in use");
                 }
             }
         }
-        public void RenderMeshes(Scene scene, Graphics target)
+        public Bitmap RenderMeshes(Scene scene, Form target)
         {
+            Bitmap b = new Bitmap(target.Size.Width,target.Size.Height);
+            this.screenSize = target.Size;
             foreach (Mesh m in scene.meshes)
             {
-                RenderFaces(scene,target,m.geometry);
+                RenderFaces(scene, b, m);
             }
+            return b;
         }
     }
 }
