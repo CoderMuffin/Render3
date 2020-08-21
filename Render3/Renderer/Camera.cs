@@ -19,13 +19,22 @@ namespace Render3.Renderer
         Wireframe=1,
         Shaded=2
     }
-    public class Camera
+    public class Camera : SceneObject
     {
         public Pen pen = new Pen(System.Drawing.Color.Black);
         public Size screenSize { get { return ss; } set { ss = value; fov = fov; } }
         private Size ss;
+        public int clipNear;
         public CameraFovMode fovMode=CameraFovMode.Horizontal;
         private double afov;
+        public Point3 TransformRelative(Point3 toTransform)
+        {
+            Point3 dir = toTransform - transform.position; // get point direction relative to pivot
+            dir = Quaternion.Inverse(transform.rotation) * dir; // rotate it
+            toTransform = dir + transform.position; // calculate rotated point
+
+            return toTransform-transform.position;
+        }
         public double fov
         {
             get
@@ -51,26 +60,24 @@ namespace Render3.Renderer
         }
         public Point2 WorldToScreen(Point3 p)
         {
-            return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z))+new Point2(screenSize.Width / 2, screenSize.Height / 2);
-        }
-        public void RenderVertices(Scene scene,Graphics target)
-        {
-            foreach (Mesh m in scene.meshes)
+            p = TransformRelative(p);
+            if (clipNear>p.z)
             {
-                foreach (Point3 p in m.worldVertices)
-                {
-                    try
-                    {
-                        //target.FillRectangle(new SolidBrush(System.Drawing.Color.Black), new Rectangle(WorldToScreen(p).ToPoint(), new Size(1, 1)));
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        Console.Write("Render3.Renderer.Camera.RenderVertices(): Display already in use");
-                    }
-                }
+                return new Point2(p.x*100000,p.y*100000);
+            }
+            try
+            {
+                return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.Width / 2, screenSize.Height / 2); //Warning: Unsafe for camera position
+            } catch (OverflowException)
+            {
+                return new Point2(-5, -5);
             }
         }
-        public void RenderFaces(Scene scene, Bitmap b, Mesh m)
+        public bool OutOfBounds(Size bounds,Point p1, Point p2)
+        {
+            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1, new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2, new Size(1, 1))));
+        }
+        public void RenderFaces(Scene scene, Bitmap b, Components.Mesh m)
         {
             foreach (Face f in m.geometry.triangles)
             {
@@ -78,9 +85,13 @@ namespace Render3.Renderer
                 {
                     using (Graphics target = Graphics.FromImage(b))
                     {
-                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint());
-                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint());
-                        target.DrawLine(pen, WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint());
+                        Point[] vertices = { WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint() };
+                        if (!OutOfBounds(new Size(b.Width,b.Height),vertices[0], vertices[1]))
+                            target.DrawLine(pen, vertices[0], vertices[1]);
+                        if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[2]))
+                            target.DrawLine(pen, vertices[0], vertices[2]);
+                        if (!OutOfBounds(new Size(b.Width, b.Height), vertices[2], vertices[1]))
+                            target.DrawLine(pen, vertices[2], vertices[1]);
                     }
 
                 }
@@ -94,9 +105,17 @@ namespace Render3.Renderer
         {
             Bitmap b = new Bitmap(target.Size.Width,target.Size.Height);
             this.screenSize = target.Size;
-            foreach (Mesh m in scene.meshes)
+            using (Graphics t = Graphics.FromImage(b))
             {
-                RenderFaces(scene, b, m);
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(255,255,255)))
+                {
+                    t.FillRectangle(brush, new Rectangle(new Point(0,0), target.Size));
+                }
+            }
+            foreach (SceneObject o in scene.objects)
+            {
+                if (o.GetComponent<Components.Mesh>()!=null)
+                    RenderFaces(scene, b, o.GetComponent<Components.Mesh>());
             }
             return b;
         }

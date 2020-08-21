@@ -22,8 +22,8 @@ namespace Render3.Geometries
         {
             foreach (Face f in triangles)
             {
-                Point3 V = f.vertices[1] - f.vertices[0];
-                Point3 W = f.vertices[2] - f.vertices[1];
+                Point3 V = vertices[f.vertices[1]] - vertices[f.vertices[0]];
+                Point3 W = vertices[f.vertices[2]] - vertices[f.vertices[1]];
                 f.normal.x = ((V.y * W.z) - (V.z * W.y));
                 f.normal.y = ((V.z * W.x) - (V.x * W.z));
                 f.normal.y = ((V.x * W.y) - (V.y * W.x));

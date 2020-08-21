@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Render3.Core;
+using Render3.Renderer;
 namespace Render3.Geometries
 {
     public class CubeGeometry : BaseGeometry

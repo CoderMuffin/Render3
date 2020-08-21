@@ -28,14 +28,17 @@ namespace Render3.Renderer
         }
         public void Render(Object o, System.Timers.ElapsedEventArgs e)
         {
-                try
-                {
-                    TickEvent();
-                } catch (NullReferenceException)
-                {
-                    
-                }
-                g.DrawImage(scene.camera.RenderMeshes(scene, f1),new Point(0,0));
+            if (TickEvent != null)
+            {
+                TickEvent();
+            }
+            try
+            {
+                g.DrawImage(scene.camera.RenderMeshes(scene, f1), new Point(0, 0));
+            } catch (InvalidOperationException)
+            {
+                Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
+            }
         }
     }
 }

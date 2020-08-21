@@ -35,7 +35,8 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>R3.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SixLabors.ImageSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
@@ -68,6 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder.cs" />
+    <Compile Include="Components\Component.cs" />
+    <Compile Include="Core\Debug.cs" />
+    <Compile Include="Core\Input.cs" />
+    <Compile Include="Core\SceneObject.cs" />
+    <Compile Include="Components\Transform.cs" />
     <Compile Include="Geometries\BaseGeometry.cs" />
     <Compile Include="Geometries\IGeometry.cs" />
     <Compile Include="Core\Coordinates.cs" />
@@ -78,7 +84,7 @@
     <Compile Include="Renderer\Camera.cs" />
     <Compile Include="Renderer\EngineLoop.cs" />
     <Compile Include="Renderer\Face.cs" />
-    <Compile Include="Renderer\Mesh.cs" />
+    <Compile Include="Components\Mesh.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -104,9 +110,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="R3.ico" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
