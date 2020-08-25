@@ -11,11 +11,12 @@ namespace Render3.Renderer
     public class EngineLoop
     {
         public System.Timers.Timer renderTimer;
+        public double timeElapsed;
         public Scene scene;
         public Form f1;
         private Graphics g;
         public delegate void tick();
-        public event tick TickEvent;
+        public event tick RenderEvent;
         public EngineLoop(Scene s,Form f1)
         {
             this.f1 = f1;
@@ -25,12 +26,21 @@ namespace Render3.Renderer
             renderTimer.Interval = 16;
             renderTimer.Elapsed += Render;
             renderTimer.Enabled = true;
+            /*System.Timers.Timer t = new System.Timers.Timer();
+            t.Interval = 10;
+            t.Elapsed += UpdateTime;
+            t.Enabled = true;*/
+            
+        }
+        private void UpdateTime(Object o, System.Timers.ElapsedEventArgs e)
+        {
+            timeElapsed += 0.01;
         }
         public void Render(Object o, System.Timers.ElapsedEventArgs e)
         {
-            if (TickEvent != null)
+            if (RenderEvent != null)
             {
-                TickEvent();
+                RenderEvent();
             }
             try
             {

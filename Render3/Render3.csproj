@@ -68,7 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builder.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Core\Debug.cs" />
     <Compile Include="Core\Input.cs" />

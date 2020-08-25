@@ -16,12 +16,14 @@ namespace Render3.Renderer
     }
     public enum RenderMode
     {
+        None=0,
         Wireframe=1,
         Shaded=2
     }
     public class Camera : SceneObject
     {
-        public Pen pen = new Pen(System.Drawing.Color.Black);
+        public RenderMode renderMode = RenderMode.Shaded;
+        private Pen gpen = new Pen(System.Drawing.Color.Black);
         public Size screenSize { get { return ss; } set { ss = value; fov = fov; } }
         private Size ss;
         public int clipNear;
@@ -70,7 +72,7 @@ namespace Render3.Renderer
                 return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.Width / 2, screenSize.Height / 2); //Warning: Unsafe for camera position
             } catch (OverflowException)
             {
-                return new Point2(-5, -5);
+                return new Point2(-5,-5);
             }
         }
         public bool OutOfBounds(Size bounds,Point p1, Point p2)
@@ -79,27 +81,54 @@ namespace Render3.Renderer
         }
         public void RenderFaces(Scene scene, Bitmap b, Components.Mesh m)
         {
+            List<Face> orderedTriangles = new List<Face>();
             foreach (Face f in m.geometry.triangles)
+            {
+                int i = 0;
+                foreach (Face toCompare in orderedTriangles)
+                {
+                    if (TransformRelative(f.worldCenter).z<TransformRelative(toCompare.worldCenter).z) break;
+                    i++;
+                }
+                orderedTriangles.Insert(i, f);
+            }
+            foreach (Face f in orderedTriangles.Reverse<Face>())
             {
                 try
                 {
                     using (Graphics target = Graphics.FromImage(b))
                     {
                         Point[] vertices = { WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint() };
-                        if (!OutOfBounds(new Size(b.Width,b.Height),vertices[0], vertices[1]))
-                            target.DrawLine(pen, vertices[0], vertices[1]);
-                        if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[2]))
-                            target.DrawLine(pen, vertices[0], vertices[2]);
-                        if (!OutOfBounds(new Size(b.Width, b.Height), vertices[2], vertices[1]))
-                            target.DrawLine(pen, vertices[2], vertices[1]);
+                        if (((int)renderMode & 1) != 0)
+                        {
+                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[1]))
+                                target.DrawLine(gpen, vertices[0], vertices[1]);
+                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[2]))
+                                target.DrawLine(gpen, vertices[0], vertices[2]);
+                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[2], vertices[1]))
+                                target.DrawLine(gpen, vertices[2], vertices[1]);
+                        } 
+                        if (((int)renderMode & 2) != 0)
+                        {
+                            double color = ((f.worldNormal - new Direction3(2,-1,1).normalized)).magnitude/2;
+                            Color c = Color.FromArgb((int)(255 * (1 - color)), (int)(255 * (1 - color)), (int)(255 * (1 - color)));
+                            target.FillPolygon(new SolidBrush(ColorMerge(Color.FromArgb(255,0,0),c)),vertices);
+                        }
                     }
 
                 }
                 catch (InvalidOperationException)
                 {
-                    Console.Write("Render3.Renderer.Camera.RenderFaces(): Display already in use");
+                    Console.WriteLine("Render3.Renderer.Camera.RenderFaces(): Display already in use");
+                } catch (ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("Render3.Renderer.Camera.RenderFaces(): A.O.O.R.E");
                 }
             }
+        }
+        public static Color ColorMerge(Color a,Color b)
+        {
+            return Color.FromArgb(a.A * b.A / 255,a.R * b.R / 255, a.G * b.G / 255, a.B * b.B / 255);
         }
         public Bitmap RenderMeshes(Scene scene, Form target)
         {
@@ -114,7 +143,7 @@ namespace Render3.Renderer
             }
             foreach (SceneObject o in scene.objects)
             {
-                if (o.GetComponent<Components.Mesh>()!=null)
+                if (o.GetComponent<Components.Mesh>()!=null&&o.GetComponent<Components.Mesh>().enabled==true)
                     RenderFaces(scene, b, o.GetComponent<Components.Mesh>());
             }
             return b;

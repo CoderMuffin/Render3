@@ -11,5 +11,6 @@ namespace Render3.Core
         List<Face> triangles { get; set; }
         List<Point3> vertices { get; set; }
         void CalculateFaceNormals();
+        void CalculateFaceCenters();
     }
 }

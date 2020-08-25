@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 
 namespace Render3.Components
 {
-    public class Component
+    public abstract class Component
     {
-        public Core.SceneObject parent;
+        public bool enabled { get { return _enabled; } set { this._enabled = false; EnabledChanged(value); } }
+
+        protected virtual void EnabledChanged(bool value)
+        {
+            
+        }
+
+        protected bool _enabled=true;
+        public Core.SceneObject sceneObject;
         public Component()
         {
         }
         public Component(Core.SceneObject parent)
         {
-            this.parent = parent;
+            this.sceneObject = parent;
         }
     }
 }
