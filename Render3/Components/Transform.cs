@@ -15,7 +15,8 @@ namespace Render3.Components
         {
             foreach (SceneObject child in sceneObject.children)
             {
-                child.transform.localPosition = child.transform.localPosition;
+                Point3 rotated = (rotation * child.transform._assignedLP);
+                child.transform.position = position + (rotated);
                 child.transform.localRotation = child.transform.localRotation;
                 child.transform.localScale = child.transform.localScale;
             }
@@ -75,6 +76,7 @@ namespace Render3.Components
         private Quaternion _rotation = Quaternion.Identity;
         #endregion Global transform qualifiers
         #region Local transform modifiers
+        private Point3 _assignedLP;
         public Point3 localPosition
         {
             get
@@ -90,13 +92,15 @@ namespace Render3.Components
             }
             set
             {
+                _assignedLP = value;
                 if (sceneObject.parent == null)
                 {
                     position = value;
                 }
                 else
                 {
-                    position = sceneObject.parent.transform.position + sceneObject.parent.transform.localRotation*value;
+                    Point3 rotated = (sceneObject.parent.transform.rotation * value);
+                    position = sceneObject.parent.transform.position + (rotated);
                 }
                 foreach (SceneObject child in sceneObject.children)
                 {
