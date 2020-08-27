@@ -42,6 +42,20 @@ namespace Render3.Core
             GetComponent<T>().sceneObject = null;
             components.Remove(GetComponent<T>());
         }
+        public List<T> GetDescendantComponents<T>() where T : Component
+        {
+            List<T> cc = new List<T>();
+            foreach (SceneObject child in children)
+            {
+                foreach (T c in child.GetDescendantComponents<T>())
+                {
+                    cc.Add(c);
+                }
+                if (child.GetComponent<T>()!=null)
+                    cc.Add(child.GetComponent<T>());
+            }
+            return cc;
+        }
         public SceneObject(SceneObject parent)
         {
             this.parent = parent;

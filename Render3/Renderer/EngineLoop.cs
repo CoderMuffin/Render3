@@ -38,6 +38,10 @@ namespace Render3.Renderer
         }
         public void Render(Object o, System.Timers.ElapsedEventArgs e)
         {
+            if (Debug.crashed)
+            {
+                return;
+            }
             if (RenderEvent != null)
             {
                 RenderEvent();

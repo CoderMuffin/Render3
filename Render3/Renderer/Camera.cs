@@ -94,8 +94,10 @@ namespace Render3.Renderer
             }
             foreach (Face f in orderedTriangles.Reverse<Face>())
             {
+              
                 try
                 {
+                    //throw new ArgumentOutOfRangeException(); Force crash
                     using (Graphics target = Graphics.FromImage(b))
                     {
                         Point[] vertices = { WorldToScreen(m.worldVertices[f.vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[1]]).ToPoint(), WorldToScreen(m.worldVertices[f.vertices[2]]).ToPoint() };
@@ -119,10 +121,15 @@ namespace Render3.Renderer
                 }
                 catch (InvalidOperationException)
                 {
-                    Console.WriteLine("Render3.Renderer.Camera.RenderFaces(): Display already in use");
+                    Console.WriteLine("[X] Render3.Renderer.Camera.RenderFaces(): Display already in use");
                 } catch (ArgumentOutOfRangeException)
                 {
-                    Console.WriteLine("Render3.Renderer.Camera.RenderFaces(): A.O.O.R.E");
+                    Console.WriteLine("[!] Render3.Renderer.Camera.RenderFaces(): Render boot error.");
+                    Debug.LaunchErrorForm();
+                }
+                foreach (Components.Mesh childMesh in m.sceneObject.GetDescendantComponents<Components.Mesh>())
+                {
+                    RenderFaces(scene, b, childMesh);
                 }
             }
         }
