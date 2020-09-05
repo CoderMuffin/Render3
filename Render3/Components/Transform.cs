@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Render3.Components;
-using Render3.Core;
+﻿using Render3.Core;
 namespace Render3.Components
 {
     public class Transform : Render3.Components.Component
     {
-        public void UpdateLocals()
+        public void UpdateChildLocals()
         {
             foreach (SceneObject child in sceneObject.children)
             {
                 Point3 rotated = (rotation * child.transform._assignedLP);
-                child.transform.position = position + (rotated);
-                child.transform.localRotation = child.transform.localRotation;
-                child.transform.localScale = child.transform.localScale;
+                child.transform._position = position + (rotated);
+                child.transform._rotation = rotation * child.transform.localRotation;
+                Debug.Print(child.GetComponent<Mesh>().color.ToString() + child.transform.localScale);
+                child.transform._scale = scale*child.transform.localScale;
+                if (child.GetComponent<Mesh>() != null)
+                {
+                    child.GetComponent<Mesh>().UpdateMesh();
+                }
+                child.transform.UpdateChildLocals();
             }
         }
         #region Global transform modifiers
@@ -33,7 +31,7 @@ namespace Render3.Components
             {
                 _position = value;
 
-                UpdateLocals();
+                UpdateChildLocals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -49,7 +47,7 @@ namespace Render3.Components
             set
             {
                 _scale = value;
-                UpdateLocals();
+                UpdateChildLocals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -66,7 +64,7 @@ namespace Render3.Components
             set
             {
                 _rotation = value;
-                UpdateLocals();
+                UpdateChildLocals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -102,10 +100,6 @@ namespace Render3.Components
                     Point3 rotated = (sceneObject.parent.transform.rotation * value);
                     position = sceneObject.parent.transform.position + (rotated);
                 }
-                foreach (SceneObject child in sceneObject.children)
-                {
-                    child.transform.localPosition = child.transform.localPosition;
-                }
             }
         }
         public Direction3 localScale
@@ -128,10 +122,6 @@ namespace Render3.Components
                 else
                 {
                     scale = sceneObject.parent.transform.scale * value;
-                }
-                foreach (SceneObject child in sceneObject.children)
-                {
-                    child.transform.localScale = child.transform.localScale;
                 }
             }
         }
@@ -158,23 +148,18 @@ namespace Render3.Components
                 {
                     rotation = sceneObject.parent.transform.rotation * value;
                 }
-                
-                foreach (SceneObject child in sceneObject.children)
-                {
-                    child.transform.localRotation = child.transform.localRotation;
-                }
             }
         }
         #endregion Local transform qualifiers
-        public Direction3 forward
+        public Direction3 Forward
         {
             get { return rotation * new Direction3(0, 0, 1); }
         }
-        public Direction3 right
+        public Direction3 Right
         {
             get { return rotation * new Direction3(1, 0, 0); }
         }
-        public Direction3 up
+        public Direction3 Up
         {
             get { return rotation * new Direction3(0, 1, 0); }
         }

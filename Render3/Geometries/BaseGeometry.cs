@@ -4,42 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Render3.Core;
-using Render3.Renderer;
+
 namespace Render3.Geometries
 {
     public class BaseGeometry:IGeometry
     {
-        public List<Point3> vertices { get; set; }
-        public List<Face> triangles { get; set; }
+        public static BaseGeometry CubeGeometry()
+        {
+            BaseGeometry bg = new BaseGeometry();
+
+            bg.Vertices.AddRange(new Point3[]{
+                new Point3(-1, -1, -1),
+                new Point3(1, -1, -1),
+                new Point3(1, 1, -1),
+                new Point3(-1, 1, -1),
+                new Point3(-1, 1, 1),
+                new Point3(1, 1, 1),
+                new Point3(1, -1, 1),
+                new Point3(-1, -1, 1),
+            });
+            bg.Triangles.AddRange(new Face[]
+            {
+                new Face(bg, 0, 2, 1), //face front
+	            new Face(bg, 0, 3, 2),
+                new Face(bg, 2, 3, 4),//face top
+	            new Face(bg, 2, 4, 5),
+                new Face(bg, 1, 2, 5),//face right
+	            new Face(bg, 1, 5, 6),
+                new Face(bg, 0, 7, 4),//face left
+	            new Face(bg, 0, 4, 3),
+                new Face(bg, 5, 4, 7),//face back
+	            new Face(bg, 5, 7, 6),
+                new Face(bg, 0, 6, 7),//face bottom
+	            new Face(bg, 0, 1, 6),
+            });
+            return bg;
+        }
+        public List<Point3> Vertices { get; set; }
+        public List<Face> Triangles { get; set; }
         public BaseGeometry(params Face[] triangles)
         {
-            vertices = new List<Point3>();
-            this.triangles = new List<Face>();
-            this.triangles.AddRange(triangles);
-            CalculateFaceNormals();
-            CalculateFaceCenters();
-        }
-        public void CalculateFaceNormals()
-        {
-            foreach (Face f in triangles)
-            {
-                Point3 V = vertices[f.vertices[1]] - vertices[f.vertices[0]];
-                Point3 W = vertices[f.vertices[2]] - vertices[f.vertices[0]];
-                f.normal.x = ((V.y * W.z) - (V.z * W.y));
-                f.normal.y = ((V.z * W.x) - (V.x * W.z));
-                f.normal.z = ((V.x * W.y) - (V.y * W.x));
-                f.normal.Normalize();
-            }
-        }
-        public void CalculateFaceCenters()
-        {
-            foreach (Face f in triangles)
-            {
-                double x = (vertices[f.vertices[0]].x + vertices[f.vertices[1]].x + vertices[f.vertices[0]].x) / 3;
-                double y = (vertices[f.vertices[0]].y + vertices[f.vertices[1]].y + vertices[f.vertices[2]].y) / 3;
-                double z = (vertices[f.vertices[0]].z + vertices[f.vertices[1]].z + vertices[f.vertices[2]].z) / 3;
-                f.center = new Point3(x, y, z);
-            }
+            Vertices = new List<Point3>();
+            this.Triangles = new List<Face>();
+            this.Triangles.AddRange(triangles);
         }
     }
 }

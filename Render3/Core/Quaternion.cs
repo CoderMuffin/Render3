@@ -259,13 +259,6 @@ namespace Render3.Core
             return ((((quaternion1.x * quaternion2.x) + (quaternion1.y * quaternion2.y)) + (quaternion1.z * quaternion2.z)) + (quaternion1.w * quaternion2.w));
         }
 
-
-        public static void Dot(ref Quaternion quaternion1, ref Quaternion quaternion2, out double result)
-        {
-            result = (((quaternion1.x * quaternion2.x) + (quaternion1.y * quaternion2.y)) + (quaternion1.z * quaternion2.z)) + (quaternion1.w * quaternion2.w);
-        }
-
-
         public override bool Equals(object obj)
         {
             bool flag = false;
@@ -302,26 +295,24 @@ namespace Render3.Core
 
         }
 
-        public static void Inverse(ref Quaternion quaternion, out Quaternion result)
+        public double Length
         {
-            double num2 = (((quaternion.x * quaternion.x) + (quaternion.y * quaternion.y)) + (quaternion.z * quaternion.z)) + (quaternion.w * quaternion.w);
-            double num = 1f / num2;
-            result.x = -quaternion.x * num;
-            result.y = -quaternion.y * num;
-            result.z = -quaternion.z * num;
-            result.w = quaternion.w * num;
-        }
-
-        public double Length()
-        {
-            double num = (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w);
-            return (double)Math.Sqrt((double)num);
+            get
+            {
+                {
+                    double num = (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w);
+                    return (double)Math.Sqrt((double)num);
+                }
+            }
         }
 
 
-        public double LengthSquared()
+        public double LengthSquared
         {
-            return ((((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w));
+            get
+            {
+                return ((((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w));
+            }
         }
 
 
@@ -352,35 +343,6 @@ namespace Render3.Core
             quaternion.z *= num3;
             quaternion.w *= num3;
             return quaternion;
-        }
-
-
-        public static void Lerp(ref Quaternion quaternion1, ref Quaternion quaternion2, double amount, out Quaternion result)
-        {
-            double num = amount;
-            double num2 = 1f - num;
-            double num5 = (((quaternion1.x * quaternion2.x) + (quaternion1.y * quaternion2.y)) + (quaternion1.z * quaternion2.z)) + (quaternion1.w * quaternion2.w);
-            if (num5 >= 0f)
-            {
-                result.x = (num2 * quaternion1.x) + (num * quaternion2.x);
-                result.y = (num2 * quaternion1.y) + (num * quaternion2.y);
-                result.z = (num2 * quaternion1.z) + (num * quaternion2.z);
-                result.w = (num2 * quaternion1.w) + (num * quaternion2.w);
-            }
-            else
-            {
-                result.x = (num2 * quaternion1.x) - (num * quaternion2.x);
-                result.y = (num2 * quaternion1.y) - (num * quaternion2.y);
-                result.z = (num2 * quaternion1.z) - (num * quaternion2.z);
-                result.w = (num2 * quaternion1.w) - (num * quaternion2.w);
-            }
-            double num4 = (((result.x * result.x) + (result.y * result.y)) + (result.z * result.z)) + (result.w * result.w);
-            double num3 = 1f / ((double)Math.Sqrt((double)num4));
-            result.x *= num3;
-            result.y *= num3;
-            result.z *= num3;
-            result.w *= num3;
-
         }
 
 
@@ -417,37 +379,6 @@ namespace Render3.Core
         }
 
 
-        public static void Slerp(ref Quaternion quaternion1, ref Quaternion quaternion2, double amount, out Quaternion result)
-        {
-            double num2;
-            double num3;
-            double num = amount;
-            double num4 = (((quaternion1.x * quaternion2.x) + (quaternion1.y * quaternion2.y)) + (quaternion1.z * quaternion2.z)) + (quaternion1.w * quaternion2.w);
-            bool flag = false;
-            if (num4 < 0f)
-            {
-                flag = true;
-                num4 = -num4;
-            }
-            if (num4 > 0.999999f)
-            {
-                num3 = 1f - num;
-                num2 = flag ? -num : num;
-            }
-            else
-            {
-                double num5 = (double)Math.Acos((double)num4);
-                double num6 = (double)(1.0 / Math.Sin((double)num5));
-                num3 = ((double)Math.Sin((double)((1f - num) * num5))) * num6;
-                num2 = flag ? (((double)-Math.Sin((double)(num * num5))) * num6) : (((double)Math.Sin((double)(num * num5))) * num6);
-            }
-            result.x = (num3 * quaternion1.x) + (num2 * quaternion2.x);
-            result.y = (num3 * quaternion1.y) + (num2 * quaternion2.y);
-            result.z = (num3 * quaternion1.z) + (num2 * quaternion2.z);
-            result.w = (num3 * quaternion1.w) + (num2 * quaternion2.w);
-        }
-
-
         public static Quaternion Subtract(Quaternion quaternion1, Quaternion quaternion2)
         {
             Quaternion quaternion;
@@ -457,16 +388,6 @@ namespace Render3.Core
             quaternion.w = quaternion1.w - quaternion2.w;
             return quaternion;
         }
-
-
-        public static void Subtract(ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
-        {
-            result.x = quaternion1.x - quaternion2.x;
-            result.y = quaternion1.y - quaternion2.y;
-            result.z = quaternion1.z - quaternion2.z;
-            result.w = quaternion1.w - quaternion2.w;
-        }
-
 
         public static Quaternion Multiply(Quaternion quaternion1, Quaternion quaternion2)
         {
@@ -511,44 +432,17 @@ namespace Render3.Core
         }
 
 
-        public static void Multiply(ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
+        public Quaternion Negated
         {
-            double x = quaternion1.x;
-            double y = quaternion1.y;
-            double z = quaternion1.z;
-            double w = quaternion1.w;
-            double num4 = quaternion2.x;
-            double num3 = quaternion2.y;
-            double num2 = quaternion2.z;
-            double num = quaternion2.w;
-            double num12 = (y * num2) - (z * num3);
-            double num11 = (z * num4) - (x * num2);
-            double num10 = (x * num3) - (y * num4);
-            double num9 = ((x * num4) + (y * num3)) + (z * num2);
-            result.x = ((x * num) + (num4 * w)) + num12;
-            result.y = ((y * num) + (num3 * w)) + num11;
-            result.z = ((z * num) + (num2 * w)) + num10;
-            result.w = (w * num) - num9;
-        }
-
-
-        public static Quaternion Negate(Quaternion quaternion)
-        {
-            Quaternion quaternion2;
-            quaternion2.x = -quaternion.x;
-            quaternion2.y = -quaternion.y;
-            quaternion2.z = -quaternion.z;
-            quaternion2.w = -quaternion.w;
-            return quaternion2;
-        }
-
-
-        public static void Negate(ref Quaternion quaternion, out Quaternion result)
-        {
-            result.x = -quaternion.x;
-            result.y = -quaternion.y;
-            result.z = -quaternion.z;
-            result.w = -quaternion.w;
+            get
+            {
+                Quaternion quaternion2;
+                quaternion2.x = -x;
+                quaternion2.y = -y;
+                quaternion2.z = -z;
+                quaternion2.w = -w;
+                return quaternion2;
+            }
         }
 
 
@@ -563,29 +457,20 @@ namespace Render3.Core
         }
 
 
-        public static Quaternion Normalize(Quaternion quaternion)
+        public Quaternion Normalized
         {
-            Quaternion quaternion2;
-            double num2 = (((quaternion.x * quaternion.x) + (quaternion.y * quaternion.y)) + (quaternion.z * quaternion.z)) + (quaternion.w * quaternion.w);
-            double num = 1f / ((double)Math.Sqrt((double)num2));
-            quaternion2.x = quaternion.x * num;
-            quaternion2.y = quaternion.y * num;
-            quaternion2.z = quaternion.z * num;
-            quaternion2.w = quaternion.w * num;
-            return quaternion2;
+            get
+            {
+                Quaternion quaternion2;
+                double num2 = (((x * x) + (y * y)) + (z * z)) + (w * w);
+                double num = 1f / ((double)Math.Sqrt((double)num2));
+                quaternion2.x = x * num;
+                quaternion2.y = y * num;
+                quaternion2.z = z * num;
+                quaternion2.w = w * num;
+                return quaternion2;
+            }
         }
-
-
-        public static void Normalize(ref Quaternion quaternion, out Quaternion result)
-        {
-            double num2 = (((quaternion.x * quaternion.x) + (quaternion.y * quaternion.y)) + (quaternion.z * quaternion.z)) + (quaternion.w * quaternion.w);
-            double num = 1f / ((double)Math.Sqrt((double)num2));
-            result.x = quaternion.x * num;
-            result.y = quaternion.y * num;
-            result.z = quaternion.z * num;
-            result.w = quaternion.w * num;
-        }
-
 
         public static Quaternion operator +(Quaternion quaternion1, Quaternion quaternion2)
         {

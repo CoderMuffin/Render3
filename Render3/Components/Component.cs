@@ -17,6 +17,12 @@ namespace Render3.Components
 
         protected bool _enabled=true;
         public Core.SceneObject sceneObject;
+        public Core.SceneObject DefaultObject()
+        {
+            Core.SceneObject c = new Core.SceneObject();
+            c.AddComponent(this,GetType());
+            return c;
+        }
         public Component()
         {
         }

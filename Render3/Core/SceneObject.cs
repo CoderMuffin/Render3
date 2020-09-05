@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,7 +32,22 @@ namespace Render3.Core
                 component.sceneObject = this;
                 return;
             }
-            throw new InvalidOperationException("Render3.Core.SceneObject.AddComponent(): Component is already added");
+            throw new InvalidOperationException("Render3.Core.SceneObject.AddComponent(): Component " + component.GetType().FullName + " is already added");
+        }
+        private void AC<T>(T c)where T:Component
+        {
+            AddComponent(c);
+        }
+        private T GC<T>() where T : Component
+        {
+            return GetComponent<T>();
+        }
+        public void AddComponent(Component component, Type t) {
+            GetType().GetMethod("AC",BindingFlags.NonPublic|BindingFlags.Instance).MakeGenericMethod(t).Invoke(this,new object[] { component });
+        }
+        public Component GetComponent(Component component, Type t)
+        {
+            return (Component)GetType().GetMethod("GC", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreReturn).MakeGenericMethod(t).Invoke(this, new object[] { component });
         }
         public void RemoveComponent<T>() where T : Component
         {
@@ -42,17 +58,22 @@ namespace Render3.Core
             GetComponent<T>().sceneObject = null;
             components.Remove(GetComponent<T>());
         }
-        public List<T> GetDescendantComponents<T>() where T : Component
+        public List<T> GetDescendantComponents<T>(bool enabled=false) where T : Component
         {
             List<T> cc = new List<T>();
             foreach (SceneObject child in children)
             {
-                foreach (T c in child.GetDescendantComponents<T>())
+                foreach (T c in child.GetDescendantComponents<T>(enabled))
                 {
                     cc.Add(c);
                 }
-                if (child.GetComponent<T>()!=null)
-                    cc.Add(child.GetComponent<T>());
+                if (child.GetComponent<T>() != null)
+                {
+                    if (enabled && child.GetComponent<T>().enabled)
+                        cc.Add(child.GetComponent<T>());
+                    else if (!enabled)
+                        cc.Add(child.GetComponent<T>());
+                }
             }
             return cc;
         }

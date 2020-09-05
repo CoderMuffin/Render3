@@ -88,7 +88,7 @@ namespace Render3.Core
         {
             return new Direction3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
         }
-        public static bool operator ==(Direction3 lhs,Direction3 rhs)
+        public static bool operator ==(Direction3 lhs, Direction3 rhs)
         {
             return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
         }
@@ -106,7 +106,10 @@ namespace Render3.Core
             return new Point3(x, y, z);
         }
 
-
+        public override string ToString()
+        {
+            return "Render3.Core.Direction3.ToString(): " + x.ToString() + "," + y.ToString() + "," + z.ToString();
+        }
     }
     public struct Point2
     {
@@ -143,7 +146,7 @@ namespace Render3.Core
         }
         public static Point2 operator -(Point2 me)
         {
-            return new Point2(-me.x,-me.y);
+            return new Point2(-me.x, -me.y);
         }
         public static Point2 operator *(Point2 lhs, Point2 rhs)
         {
@@ -184,7 +187,7 @@ namespace Render3.Core
         public static Point2 operator !(Point2 me)
         {
             Point2 me2 = -me;
-            return me * new Point2(-1,-1);
+            return me * new Point2(-1, -1);
         }
         #endregion Operator overloads
     }
@@ -230,7 +233,7 @@ namespace Render3.Core
         {
             return new Point3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
         }
-        public static bool operator ==(Point3 lhs,Point3 rhs)
+        public static bool operator ==(Point3 lhs, Point3 rhs)
         {
             return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
         }
@@ -253,7 +256,7 @@ namespace Render3.Core
 
         public override int GetHashCode()
         {
-            var hashCode = 373119288;
+            int hashCode = 373119288;
             hashCode = hashCode * -1521134295 + base.GetHashCode();
             hashCode = hashCode * -1521134295 + x.GetHashCode();
             hashCode = hashCode * -1521134295 + y.GetHashCode();
@@ -270,8 +273,8 @@ namespace Render3.Core
     {
         public Point2 topLeft;
         public Point2 bottomRight;
-        public double width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
-        public double height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
+        public double Width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
+        public double Height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
         public Dimensions2(Point2 topLeft, Point2 bottomRight)
         {
             this.topLeft = topLeft;
@@ -279,16 +282,16 @@ namespace Render3.Core
         }
         public static implicit operator Size(Dimensions2 me)
         {
-            return new Size((int)Math.Round(me.width), (int)Math.Round(me.height));
+            return new Size((int)Math.Round(me.Width), (int)Math.Round(me.Height));
         }
     }
     public struct Dimensions3
     {
         public Point3 topLeft;
         public Point3 bottomRight;
-        public double width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
-        public double height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
-        public double depth { get { return Math.Abs(topLeft.z - bottomRight.z); } }
+        public double Width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
+        public double Height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
+        public double Depth { get { return Math.Abs(topLeft.z - bottomRight.z); } }
         public Dimensions3(Point3 topLeft, Point3 bottomRight)
         {
             this.topLeft = topLeft;
