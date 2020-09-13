@@ -1,4 +1,5 @@
 ﻿using Render3.Core;
+using System;
 namespace Render3.Components
 {
     public class Transform : Render3.Components.Component
@@ -9,8 +10,12 @@ namespace Render3.Components
             {
                 Point3 rotated = (rotation * child.transform._assignedLP);
                 child.transform._position = position + (rotated);
-                child.transform._rotation = rotation * child.transform.localRotation;
-                Debug.Print(child.GetComponent<Mesh>().color.ToString() + child.transform.localScale);
+                child.transform._rotation = Quaternion.Concatenate(child.transform.localRotation,(rotation));
+                //if (child.transform.rotation.w)
+                {
+                 //   child.transform._rotation = (rotation * child.transform.localRotation).Normalized.Negated;
+                }
+                if (child.GetComponent<Mesh>().color==System.Drawing.Color.Aqua) Debug.Print(child.GetComponent<Mesh>().color.ToString() + child.transform.rotation);
                 child.transform._scale = scale*child.transform.localScale;
                 if (child.GetComponent<Mesh>() != null)
                 {
@@ -135,7 +140,8 @@ namespace Render3.Components
                 }
                 else
                 {
-                    return sceneObject.parent.transform.rotation / rotation;
+                    Quaternion Q = sceneObject.parent.transform.rotation * Quaternion.Inverse(rotation);
+                    return Q;
                 }
             }
             set

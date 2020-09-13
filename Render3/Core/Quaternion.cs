@@ -1,6 +1,6 @@
 ﻿using System;
 using Render3.Core;
-//Thanks to http://www.technologicalutopia.com/sourcecode/xnageometry/matrix.cs.htm
+//Thanks to http://www.technologicalutopia.com/sourcecode/xnageometry/quaternion.cs.htm
 namespace Render3.Core
 {
     public struct Quaternion : IEquatable<Quaternion>
@@ -80,16 +80,7 @@ namespace Render3.Core
             quaternion.w = quaternion1.w + quaternion2.w;
             return quaternion;
         }
-
-
-        public static void Add(ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
-        {
-            //Syderis
-            result.x = quaternion1.x + quaternion2.x;//AÃ±adida por Syderis
-            result.y = quaternion1.y + quaternion2.y;
-            result.z = quaternion1.z + quaternion2.z;
-            result.w = quaternion1.w + quaternion2.w;
-        }
+        
 
         //Funcion aÃ±adida Syderis
         public static Quaternion Concatenate(Quaternion value1, Quaternion value2)
@@ -130,7 +121,7 @@ namespace Render3.Core
         }
 
         
-        public static Quaternion Invert(Quaternion value)
+        public static Quaternion Inverse(Quaternion value)
         {
             Quaternion quaternion;
             quaternion.x = -value.x;
@@ -141,14 +132,6 @@ namespace Render3.Core
         }
 
         
-        public static void Invert(ref Quaternion value, out Quaternion result)
-        {
-            result.x = -value.x;
-            result.y = -value.y;
-            result.z = -value.z;
-            result.w = value.w;
-        }
-
         public static double AngleConvert(double d,AngleUnit current,AngleUnit target)
         {
             if (current==AngleUnit.Degrees)
@@ -280,21 +263,7 @@ namespace Render3.Core
         {
             return (((this.x.GetHashCode() + this.y.GetHashCode()) + this.z.GetHashCode()) + this.w.GetHashCode());
         }
-
-
-        public static Quaternion Inverse(Quaternion quaternion)
-        {
-            Quaternion quaternion2;
-            double num2 = (((quaternion.x * quaternion.x) + (quaternion.y * quaternion.y)) + (quaternion.z * quaternion.z)) + (quaternion.w * quaternion.w);
-            double num = 1f / num2;
-            quaternion2.x = -quaternion.x * num;
-            quaternion2.y = -quaternion.y * num;
-            quaternion2.z = -quaternion.z * num;
-            quaternion2.w = quaternion.w * num;
-            return quaternion2;
-
-        }
-
+        
         public double Length
         {
             get
@@ -481,7 +450,7 @@ namespace Render3.Core
             quaternion.w = quaternion1.w + quaternion2.w;
             return quaternion;
         }
-
+        
 
         public static Quaternion operator /(Quaternion quaternion1, Quaternion quaternion2)
         {
@@ -584,15 +553,14 @@ namespace Render3.Core
         public override string ToString()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder(32);
-            sb.Append("{x:");
+            sb.Append("Render3.Core.Quaternion.ToString(): X:");
             sb.Append(this.x);
-            sb.Append(" y:");
+            sb.Append(", Y:");
             sb.Append(this.y);
-            sb.Append(" z:");
+            sb.Append(", Z:");
             sb.Append(this.z);
-            sb.Append(" w:");
+            sb.Append(", W:");
             sb.Append(this.w);
-            sb.Append("}");
             return sb.ToString();
         }
         internal Direction3 xyz
