@@ -8,7 +8,7 @@ namespace Render3.Components
         {
             foreach (SceneObject child in sceneObject.children)
             {
-                Point3 rotated = (rotation * child.transform._assignedLP);
+                Point3 rotated = (rotation * child.transform._localPosition);
                 child.transform._position = position + (rotated);
                 child.transform._rotation = (rotation*child.transform.localRotation);
                 //if (child.transform.rotation.Dot())
@@ -78,7 +78,7 @@ namespace Render3.Components
         private Quaternion _rotation = Quaternion.Identity;
         #endregion Global transform qualifiers
         #region Local transform modifiers
-        private Point3 _assignedLP;
+        private Point3 _localPosition;
         public Point3 localPosition
         {
             get
@@ -94,7 +94,7 @@ namespace Render3.Components
             }
             set
             {
-                _assignedLP = value;
+                _localPosition = value;
                 if (sceneObject.parent == null)
                 {
                     position = value;
@@ -104,8 +104,14 @@ namespace Render3.Components
                     Point3 rotated = (sceneObject.parent.transform.rotation * value);
                     position = sceneObject.parent.transform.position + (rotated);
                 }
+                UpdateChildLocals();
+                if (sceneObject.GetComponent<Mesh>() != null)
+                {
+                    sceneObject.GetComponent<Mesh>().UpdateMesh();
+                }
             }
         }
+        private Direction3 _localScale=new Direction3(1);
         public Direction3 localScale
         {
             get
@@ -119,13 +125,21 @@ namespace Render3.Components
             }
             set
             {
+                _localScale = value;
                 if (sceneObject.parent == null)
                 {
+                    
                     scale = value;
                 }
                 else
                 {
                     scale = sceneObject.parent.transform.scale * value;
+                }
+
+                UpdateChildLocals();
+                if (sceneObject.GetComponent<Mesh>() != null)
+                {
+                    sceneObject.GetComponent<Mesh>().UpdateMesh();
                 }
             }
         }
@@ -141,21 +155,25 @@ namespace Render3.Components
                 else
                 {
                     return _localRotation;
-                    Quaternion Q = sceneObject.parent.transform.rotation / rotation;
-                    return Q;
                 }
             }
             set
             {
+
+                _localRotation = value;
                 if (sceneObject.parent == null)
                 {
                     rotation = value;
-                    _localRotation = value;
                 }
                 else
                 {
-                    _localRotation = value;
                     rotation = sceneObject.parent.transform.rotation * value;
+                }
+
+                UpdateChildLocals();
+                if (sceneObject.GetComponent<Mesh>() != null)
+                {
+                    sceneObject.GetComponent<Mesh>().UpdateMesh();
                 }
             }
         }
