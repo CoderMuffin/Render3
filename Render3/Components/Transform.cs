@@ -10,12 +10,11 @@ namespace Render3.Components
             {
                 Point3 rotated = (rotation * child.transform._assignedLP);
                 child.transform._position = position + (rotated);
-                child.transform._rotation = Quaternion.Concatenate(child.transform.localRotation,(rotation));
-                //if (child.transform.rotation.w)
+                child.transform._rotation = (rotation*child.transform.localRotation);
+                //if (child.transform.rotation.Dot())
                 {
                  //   child.transform._rotation = (rotation * child.transform.localRotation).Normalized.Negated;
                 }
-                if (child.GetComponent<Mesh>().color==System.Drawing.Color.Aqua) Debug.Print(child.GetComponent<Mesh>().color.ToString() + child.transform.rotation);
                 child.transform._scale = scale*child.transform.localScale;
                 if (child.GetComponent<Mesh>() != null)
                 {
@@ -130,6 +129,7 @@ namespace Render3.Components
                 }
             }
         }
+        private Quaternion _localRotation = Quaternion.Identity;
         public Quaternion localRotation
         {
             get
@@ -140,7 +140,8 @@ namespace Render3.Components
                 }
                 else
                 {
-                    Quaternion Q = sceneObject.parent.transform.rotation * Quaternion.Inverse(rotation);
+                    return _localRotation;
+                    Quaternion Q = sceneObject.parent.transform.rotation / rotation;
                     return Q;
                 }
             }
@@ -149,9 +150,11 @@ namespace Render3.Components
                 if (sceneObject.parent == null)
                 {
                     rotation = value;
+                    _localRotation = value;
                 }
                 else
                 {
+                    _localRotation = value;
                     rotation = sceneObject.parent.transform.rotation * value;
                 }
             }

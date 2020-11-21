@@ -121,13 +121,13 @@ namespace Render3.Core
         }
 
         
-        public static Quaternion Inverse(Quaternion value)
+        public Quaternion Inverse()
         {
             Quaternion quaternion;
-            quaternion.x = -value.x;
-            quaternion.y = -value.y;
-            quaternion.z = -value.z;
-            quaternion.w = value.w;
+            quaternion.x = -x;
+            quaternion.y = -y;
+            quaternion.z = -z;
+            quaternion.w = w;
             return quaternion;
         }
 
@@ -164,6 +164,31 @@ namespace Render3.Core
             quaternion.w = num3;
             return quaternion;
 
+        }
+        private double CopySign(double x, double y) => y < 0 ? -x:x;
+        public double[] ToEulerAngles()
+        {
+            Quaternion q = this;
+            double[] angles = new double[3];
+
+            // roll (z-axis rotation)
+            double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+            double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+            angles[2] = Math.Atan2(sinr_cosp, cosr_cosp);
+
+            // pitch (x-axis rotation)
+            double sinp = 2 * (q.w * q.y - q.z * q.x);
+            if (Math.Abs(sinp) >= 1)
+                angles[0] = CopySign(Math.PI / 2, sinp); // use 90 degrees if out of range
+            else
+                angles[0] = Math.Asin(sinp);
+
+            // yaw (y-axis rotation)
+            double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+            double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+            angles[1] = Math.Atan2(siny_cosp, cosy_cosp);
+
+            return angles;
         }
 
         public static Quaternion Euler(double yaw, double pitch, double roll, AngleUnit inputUnit)
@@ -493,26 +518,14 @@ namespace Render3.Core
         }
 
 
-        public static Quaternion operator *(Quaternion quaternion1, Quaternion quaternion2)
+        public static Quaternion operator *(Quaternion left, Quaternion right)
         {
-            Quaternion quaternion;
-            double x = quaternion1.x;
-            double y = quaternion1.y;
-            double z = quaternion1.z;
-            double w = quaternion1.w;
-            double num4 = quaternion2.x;
-            double num3 = quaternion2.y;
-            double num2 = quaternion2.z;
-            double num = quaternion2.w;
-            double num12 = (y * num2) - (z * num3);
-            double num11 = (z * num4) - (x * num2);
-            double num10 = (x * num3) - (y * num4);
-            double num9 = ((x * num4) + (y * num3)) + (z * num2);
-            quaternion.x = ((x * num) + (num4 * w)) + num12;
-            quaternion.y = ((y * num) + (num3 * w)) + num11;
-            quaternion.z = ((z * num) + (num2 * w)) + num10;
-            quaternion.w = (w * num) - num9;
-            return quaternion;
+            double x = left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y;
+            double y = left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z;
+            double z = left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x;
+            double w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
+            Quaternion result = new Quaternion(x, y, z, w);
+            return result;
         }
 
 

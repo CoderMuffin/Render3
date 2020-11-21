@@ -58,20 +58,20 @@ namespace Render3.Core
             GetComponent<T>().sceneObject = null;
             components.Remove(GetComponent<T>());
         }
-        public List<T> GetDescendantComponents<T>(bool enabled=false) where T : Component
+        public List<T> GetDescendantComponents<T>(bool requireEnabled=false) where T : Component
         {
             List<T> cc = new List<T>();
             foreach (SceneObject child in children)
             {
-                foreach (T c in child.GetDescendantComponents<T>(enabled))
+                foreach (T c in child.GetDescendantComponents<T>(requireEnabled))
                 {
                     cc.Add(c);
                 }
                 if (child.GetComponent<T>() != null)
                 {
-                    if (enabled && child.GetComponent<T>().enabled)
+                    if (requireEnabled && child.GetComponent<T>().enabled)
                         cc.Add(child.GetComponent<T>());
-                    else if (!enabled)
+                    else if (!requireEnabled)
                         cc.Add(child.GetComponent<T>());
                 }
             }

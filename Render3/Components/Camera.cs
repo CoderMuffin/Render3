@@ -35,7 +35,7 @@ namespace Render3.Components
         public Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
-            dir = Quaternion.Inverse(sceneObject.transform.rotation) * dir; // rotate it
+            dir = (sceneObject.transform.rotation).Inverse() * dir; // rotate it
             toTransform = dir + sceneObject.transform.position; // calculate rotated point
 
             return toTransform - sceneObject.transform.position;
