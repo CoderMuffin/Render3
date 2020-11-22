@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Render3.Core
 {
-    public class SceneObject
+    public class SceneObject : Render3Object
     {
-        public List<SceneObject> children { get { _children.RemoveAll(x=>x.parent != this); return _children; } set { _children.RemoveAll(x => x.parent != this); _children = value; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<SceneObject> children { get { _children.RemoveAll(x => x.parent != this); return _children.AsReadOnly(); } }
         public List<Component> components = new List<Component>();
         public T GetComponent<T>() where T : Component
         {
@@ -22,11 +22,11 @@ namespace Render3.Core
         }
         public void AddComponent<T>(T component) where T : Component
         {
-            if (component==null)
+            if (component == null)
             {
                 throw new NullReferenceException("Render3.Core.SceneObject.AddComponent(): Component was null");
             }
-            if (GetComponent<T>()==null)
+            if (GetComponent<T>() == null)
             {
                 components.Add(component);
                 component.sceneObject = this;
@@ -34,7 +34,7 @@ namespace Render3.Core
             }
             throw new InvalidOperationException("Render3.Core.SceneObject.AddComponent(): Component " + component.GetType().FullName + " is already added");
         }
-        private void AC<T>(T c)where T:Component
+        private void AC<T>(T c) where T : Component
         {
             AddComponent(c);
         }
@@ -42,8 +42,9 @@ namespace Render3.Core
         {
             return GetComponent<T>();
         }
-        public void AddComponent(Component component, Type t) {
-            GetType().GetMethod("AC",BindingFlags.NonPublic|BindingFlags.Instance).MakeGenericMethod(t).Invoke(this,new object[] { component });
+        public void AddComponent(Component component, Type t)
+        {
+            GetType().GetMethod("AC", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(t).Invoke(this, new object[] { component });
         }
         public Component GetComponent(Component component, Type t)
         {
@@ -58,7 +59,7 @@ namespace Render3.Core
             GetComponent<T>().sceneObject = null;
             components.Remove(GetComponent<T>());
         }
-        public List<T> GetDescendantComponents<T>(bool requireEnabled=false) where T : Component
+        public List<T> GetDescendantComponents<T>(bool requireEnabled = false) where T : Component
         {
             List<T> cc = new List<T>();
             foreach (SceneObject child in children)
@@ -82,11 +83,12 @@ namespace Render3.Core
             this.parent = parent;
             AddComponent(transform);
         }
-        public SceneObject() {
+        public SceneObject()
+        {
             AddComponent(transform);
         }
         public Transform transform = new Transform();
-        public SceneObject parent { get { return _parent; } set { value.children.Add(this); _parent = value; } }
+        public SceneObject parent { get { return _parent; } set { if (_parent!=null) _parent._children.RemoveAll(x => x.UUID == UUID); if (value!=null) value._children.Add(this); _parent = value; transform.ForceRecalcLocals(); } }
         private SceneObject _parent;
         private List<SceneObject> _children = new List<SceneObject>();
     }

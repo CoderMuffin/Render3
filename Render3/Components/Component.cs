@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Render3.Components
 {
-    public abstract class Component
+    public abstract class Component : Render3.Core.Render3Object
     {
         public bool enabled { get { return _enabled; } set { this._enabled = false; EnabledChanged(value); } }
 

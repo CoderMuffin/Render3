@@ -1,6 +1,6 @@
 ﻿namespace Render3.Core
 {
-    public class Face
+    public class Face : Render3Object
     {
         public Components.Mesh mesh;
         public IGeometry geometry;

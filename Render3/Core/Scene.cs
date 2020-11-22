@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Render3.Components;
 namespace Render3.Core
 {
-    public class Scene
+    public class Scene : Render3Object
     {
         public Camera camera;
         public Light light=new Light();

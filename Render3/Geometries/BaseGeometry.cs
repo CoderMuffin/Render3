@@ -7,7 +7,7 @@ using Render3.Core;
 
 namespace Render3.Geometries
 {
-    public class BaseGeometry:IGeometry
+    public class BaseGeometry:Render3Object,IGeometry
     {
         public static BaseGeometry CubeGeometry()
         {

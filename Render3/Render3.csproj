@@ -74,6 +74,7 @@
     <Compile Include="Components\Light.cs" />
     <Compile Include="Core\Debug.cs" />
     <Compile Include="Core\Input.cs" />
+    <Compile Include="Core\Render3Object.cs" />
     <Compile Include="Core\SceneObject.cs" />
     <Compile Include="Components\Transform.cs" />
     <Compile Include="Crash.cs">
@@ -92,7 +93,6 @@
     <Compile Include="Core\EngineLoop.cs" />
     <Compile Include="Core\Face.cs" />
     <Compile Include="Components\Mesh.cs" />
-    <Compile Include="Render3 Class1.cs" />
     <Compile Include="Template.cs" />
     <EmbeddedResource Include="Crash.resx">
       <DependentUpon>Crash.cs</DependentUpon>

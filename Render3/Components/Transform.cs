@@ -2,14 +2,14 @@
 using System;
 namespace Render3.Components
 {
-    public class Transform : Render3.Components.Component
+    public class Transform : Component
     {
-        public void UpdateChildLocals()
+        public void UpdateChildGlobals()
         {
             foreach (SceneObject child in sceneObject.children)
             {
                 Point3 rotated = (rotation * child.transform._localPosition);
-                child.transform._position = position + (rotated);
+                child.transform._position = position + (rotated) * scale.ToPoint3();
                 child.transform._rotation = (rotation*child.transform.localRotation);
                 //if (child.transform.rotation.Dot())
                 {
@@ -20,9 +20,17 @@ namespace Render3.Components
                 {
                     child.GetComponent<Mesh>().UpdateMesh();
                 }
-                child.transform.UpdateChildLocals();
+                child.transform.UpdateChildGlobals();
             }
         }
+
+        public void ForceRecalcLocals()
+        {
+            localPosition = localPosition;
+            localRotation = localRotation;
+            localScale = localScale;
+        }
+
         #region Global transform modifiers
         private Point3 _position;
         public Point3 position
@@ -35,7 +43,7 @@ namespace Render3.Components
             {
                 _position = value;
 
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -51,7 +59,7 @@ namespace Render3.Components
             set
             {
                 _scale = value;
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -68,7 +76,7 @@ namespace Render3.Components
             set
             {
                 _rotation = value;
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -104,7 +112,7 @@ namespace Render3.Components
                     Point3 rotated = (sceneObject.parent.transform.rotation * value);
                     position = sceneObject.parent.transform.position + (rotated);
                 }
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -120,7 +128,7 @@ namespace Render3.Components
                 {
                     return scale;
                 } else {
-                    return scale / sceneObject.parent.transform.scale;
+                    return _localScale;
                 }
             }
             set
@@ -136,7 +144,7 @@ namespace Render3.Components
                     scale = sceneObject.parent.transform.scale * value;
                 }
 
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();
@@ -170,7 +178,7 @@ namespace Render3.Components
                     rotation = sceneObject.parent.transform.rotation * value;
                 }
 
-                UpdateChildLocals();
+                UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
                     sceneObject.GetComponent<Mesh>().UpdateMesh();

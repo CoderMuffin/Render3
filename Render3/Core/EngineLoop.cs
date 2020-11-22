@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Render3.Core;
 namespace Render3.Core
 {
-    public class EngineLoop
+    public class EngineLoop : Render3Object
     {
         public System.Timers.Timer renderTimer;
         public double timeElapsed;
