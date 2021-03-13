@@ -24,6 +24,11 @@ namespace Render3.Components
             Wireframe = 1,
             Shaded = 2
         }
+        public enum CameraMatrix
+        {
+            Perspective,
+            Orthographic
+        }
         int err = 0;
         public RenderMode renderMode = RenderMode.Shaded;
         private Pen gpen = new Pen(System.Drawing.Color.Black);

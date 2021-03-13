@@ -8,8 +8,8 @@ namespace Render3.Components
         {
             foreach (SceneObject child in sceneObject.children)
             {
-                Point3 rotated = (rotation * child.transform._localPosition);
-                child.transform._position = position + (rotated) * scale.ToPoint3();
+                Point3 rotated = (rotation * (child.transform._localPosition * scale.ToPoint3()));
+                child.transform._position = (position + rotated);
                 child.transform._rotation = (rotation*child.transform.localRotation);
                 //if (child.transform.rotation.Dot())
                 {
@@ -42,7 +42,14 @@ namespace Render3.Components
             set
             {
                 _position = value;
-
+                /*if (sceneObject.parent != null)
+                {
+                    _localPosition = value - sceneObject.parent.transform.position;
+                }
+                else
+                {
+                    _localPosition = value;
+                }*/
                 UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
@@ -59,6 +66,13 @@ namespace Render3.Components
             set
             {
                 _scale = value;
+                if (sceneObject.parent != null)
+                {
+                    _localScale = value/ sceneObject.parent.transform.scale;
+                } else
+                {
+                    _localScale = value;
+                }
                 UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
@@ -76,6 +90,14 @@ namespace Render3.Components
             set
             {
                 _rotation = value;
+                /*if (sceneObject.parent != null)
+                {
+                    _localRotation = value / sceneObject.parent.transform.rotation;
+                }
+                else
+                {
+                    _localRotation = value;
+                }*/
                 UpdateChildGlobals();
                 if (sceneObject.GetComponent<Mesh>() != null)
                 {
