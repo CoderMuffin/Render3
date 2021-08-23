@@ -273,25 +273,30 @@ namespace Render3.Core
     {
         public Point2 topLeft;
         public Point2 bottomRight;
-        public double Width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
-        public double Height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
+        public double width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
+        public double height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
         public Dimensions2(Point2 topLeft, Point2 bottomRight)
         {
             this.topLeft = topLeft;
             this.bottomRight = bottomRight;
         }
+        public Dimensions2(double width, double height)
+            {
+                this.topLeft = new Point2();
+                this.bottomRight = new Point2(width,height);
+            }
         public static implicit operator Size(Dimensions2 me)
         {
-            return new Size((int)Math.Round(me.Width), (int)Math.Round(me.Height));
+            return new Size((int)Math.Round(me.width), (int)Math.Round(me.height));
         }
     }
     public struct Dimensions3
     {
         public Point3 topLeft;
         public Point3 bottomRight;
-        public double Width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
-        public double Height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
-        public double Depth { get { return Math.Abs(topLeft.z - bottomRight.z); } }
+        public double width { get { return Math.Abs(topLeft.x - bottomRight.x); } }
+        public double height { get { return Math.Abs(topLeft.y - bottomRight.y); } }
+        public double depth { get { return Math.Abs(topLeft.z - bottomRight.z); } }
         public Dimensions3(Point3 topLeft, Point3 bottomRight)
         {
             this.topLeft = topLeft;

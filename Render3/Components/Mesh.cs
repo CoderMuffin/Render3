@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using Render3.Core;
 using Render3.Geometries;
 
-using System.Drawing;
 
 namespace Render3.Components
 {
-    public class Mesh : Components.Component
+    public class Mesh : Component
     {
         public IGeometry geometry
         {
@@ -18,7 +17,7 @@ namespace Render3.Components
             set { if (_geometry != null) _geometry.Triangles.ForEach(x => x.mesh = null); _geometry = value; _geometry.Triangles.ForEach(x => x.mesh = this); }
         }
         private IGeometry _geometry;
-        public Color color = Color.FromArgb(155, 155, 155);
+        public Color color = new Color(0.5, 0.5, 0.5);
         public void UpdateMesh()
         {
             RecalculateWorldVertices();

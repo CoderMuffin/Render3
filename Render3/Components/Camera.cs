@@ -13,30 +13,24 @@ namespace Render3.Components
 
     public class Camera : Component
     {
+        public Renderer renderer;
         public enum CameraFovMode
         {
             Horizontal,
             Vertical
         }
-        public enum RenderMode
-        {
-            None = 0,
-            Wireframe = 1,
-            Shaded = 2
-        }
+
         public enum CameraMatrix
         {
             Perspective,
             Orthographic
         }
         int err = 0;
-        public RenderMode renderMode = RenderMode.Shaded;
-        private Pen gpen = new Pen(System.Drawing.Color.Black);
-        public Size screenSize { get { return ss; } set { ss = value; fov = fov; } }
-        private Size ss;
+        public Dimensions2 screenSize { get { return ss; } set { ss = value; fov = fov; } }
+        private Dimensions2 ss=new Dimensions2(100,100);
         public int clipNear;
         public CameraFovMode fovMode = CameraFovMode.Horizontal;
-        private double afov;
+        private double afov; private double eyeDist;
         public Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
@@ -56,18 +50,19 @@ namespace Render3.Components
                 afov = value;
                 if (fovMode == 0)
                 {
-                    eyeDist = Math.Tan(180 - (fov / 2) * Math.PI / 180) * screenSize.Width;
+                    eyeDist = Math.Tan(180 - (fov / 2) * Math.PI / 180) * screenSize.width;
                 }
                 else
                 {
-                    eyeDist = Math.Tan(180 - (fov / 2) * Math.PI / 180) * screenSize.Height;
+                    eyeDist = Math.Tan(180 - (fov / 2) * Math.PI / 180) * screenSize.height;
                 }
             }
         }
-        private double eyeDist;
-        public Camera(double fov)
+
+        public Camera(double fov,Renderer renderer)
         {
             this.fov = fov;
+            this.renderer = renderer;
         }
         public Point2 WorldToScreen(Point3 p)
         {
@@ -78,18 +73,18 @@ namespace Render3.Components
             }
             try
             {
-                return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.Width / 2, screenSize.Height / 2);
+                return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.width / 2, screenSize.height / 2);
             }
             catch (OverflowException)
             {
                 return new Point2(-5, -5);
             }
         }
-        public bool OutOfBounds(Size bounds, Point p1, Point p2)
+        public static bool OutOfBounds(Dimensions2 bounds, Point2 p1, Point2 p2)
         {
-            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1, new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2, new Size(1, 1))));
+            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToPoint(), new Size(1, 1))));
         }
-        public void RenderFaces(Scene s,Bitmap b, Mesh m)
+        public void RenderFaces(Scene s, Mesh m)
         {
             List<Face> orderedTriangles = new List<Face>();
             foreach (Face f in m.geometry.Triangles)
@@ -107,26 +102,9 @@ namespace Render3.Components
 
                 try
                 {
-                    //throw new ArgumentOutOfRangeException(); Force crash
-                    using (Graphics target = Graphics.FromImage(b))
-                    {
-                        Point[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]).ToPoint(), WorldToScreen(m.worldVertices[f.Vertices[1]]).ToPoint(), WorldToScreen(m.worldVertices[f.Vertices[2]]).ToPoint() };
-                        if (((int)renderMode & 1) != 0)
-                        {
-                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[1]))
-                                target.DrawLine(gpen, vertices[0], vertices[1]);
-                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[0], vertices[2]))
-                                target.DrawLine(gpen, vertices[0], vertices[2]);
-                            if (!OutOfBounds(new Size(b.Width, b.Height), vertices[2], vertices[1]))
-                                target.DrawLine(gpen, vertices[2], vertices[1]);
-                        }
-                        if (((int)renderMode & 2) != 0)
-                        {
-                            double color = ((f.WorldNormal - (-s.light.direction.normalized))).magnitude / 2;
-                            Color c = Color.FromArgb((int)(255 * (1 - color)), (int)(255 * (1 - color)), (int)(255 * (1 - color)));
-                            target.FillPolygon(new SolidBrush(ColorMerge(m.color, ColorMerge(c,s.light.color))), vertices);
-                        }
-                    }
+                    Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
+                    double color = ((f.WorldNormal - (-s.light.direction.normalized))).magnitude / 2;
+                    renderer.DrawTriangle(vertices,Core.Color.Merge(m.color, Core.Color.Merge(new Core.Color(1 - color, 1 - color, 1 - color), s.light.color)));
 
                 }
                 /*catch (InvalidOperationException)
@@ -151,10 +129,7 @@ namespace Render3.Components
                 }*/
             }
         }
-        public static Color ColorMerge(Color a, Color b)
-        {
-            return Color.FromArgb(a.A * b.A / 255, a.R * b.R / 255, a.G * b.G / 255, a.B * b.B / 255);
-        }
+
         public List<Mesh> GetFlatMeshTree(List<Mesh> submeshTree)
         {
             List<Mesh> ms = new List<Mesh>();
@@ -166,17 +141,13 @@ namespace Render3.Components
             }
             return ms;
         }
-        public Bitmap RenderMeshes(Scene scene, Form target)
+        public void RenderMeshes(Scene scene)
         {
-            Bitmap b = new Bitmap(target.Size.Width, target.Size.Height);
-            this.screenSize = target.Size;
-            using (Graphics t = Graphics.FromImage(b))
-            {
-                using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 255)))
-                {
-                    t.FillRectangle(brush, new Rectangle(new Point(0, 0), target.Size));
-                }
-            }
+
+            //this.screenSize = target.Size;
+            renderer.StartDrawing(screenSize);
+
+            renderer.Clean();
             /*foreach (SceneObject o in scene.objects)
             {
                 if (o.GetComponent<Mesh>()!=null&&o.GetComponent<Mesh>().enabled==true)
@@ -203,11 +174,11 @@ namespace Render3.Components
             }
             foreach (Mesh m in orderedMeshes)
             {
-                RenderFaces(scene,b, m);
+                RenderFaces(scene, m);
             }
             err--;
             err = Math.Min(err, 0);
-            return b;
+            renderer.StopDrawing();
         }
     }
 }

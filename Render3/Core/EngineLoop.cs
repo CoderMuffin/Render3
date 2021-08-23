@@ -13,14 +13,9 @@ namespace Render3.Core
         public System.Timers.Timer renderTimer;
         public double timeElapsed;
         public Scene scene;
-        public Form f1;
-        private Graphics g;
-        public delegate void tick();
-        public event tick RenderEvent;
-        public EngineLoop(Scene s,Form f1)
+        public event Action RenderEvent;
+        public EngineLoop(Scene s)
         {
-            this.f1 = f1;
-            g = f1.CreateGraphics();
             this.scene = s;
             System.Timers.Timer ts = new System.Timers.Timer();
             ts.Interval = 500;
@@ -55,7 +50,8 @@ namespace Render3.Core
             }
             try
             {
-                g.DrawImage(scene.camera.RenderMeshes(scene, f1), new Point(0, 0));
+                scene.camera.screenSize = new Dimensions2(300,300);
+                scene.camera.RenderMeshes(scene);
             } catch (InvalidOperationException)
             {
                 Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");

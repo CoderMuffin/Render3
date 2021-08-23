@@ -8,7 +8,7 @@ namespace Render3.Components
 {
     public abstract class Component : Render3.Core.Render3Object
     {
-        public bool enabled { get { return _enabled; } set { this._enabled = false; EnabledChanged(value); } }
+        public bool enabled { get { return _enabled; } set { this._enabled = value; EnabledChanged(value); } }
 
         protected virtual void EnabledChanged(bool value)
         {
