@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Render3.Core;
 using Render3.Components;
+using Render3.Renderers;
 namespace Render3.Components
 {
 
@@ -82,7 +83,7 @@ namespace Render3.Components
         }
         public static bool OutOfBounds(Dimensions2 bounds, Point2 p1, Point2 p2)
         {
-            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToPoint(), new Size(1, 1))));
+            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToWinFormsPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToWinFormsPoint(), new Size(1, 1))));
         }
         public void RenderFaces(Scene s, Mesh m)
         {
@@ -147,14 +148,13 @@ namespace Render3.Components
             //this.screenSize = target.Size;
             renderer.StartDrawing(screenSize);
 
-            renderer.Clean();
             /*foreach (SceneObject o in scene.objects)
             {
                 if (o.GetComponent<Mesh>()!=null&&o.GetComponent<Mesh>().enabled==true)
                     RenderFaces( b, o.GetComponent<Mesh>());
             }*/
             List<Mesh> sceneMeshes = new List<Mesh>();
-            List<Face> sceneFaces = new List<Face>();
+            //TODO: order faces???//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             foreach (SceneObject o in scene.objects)
             {
                 sceneMeshes.AddRange(o.GetDescendantComponents<Mesh>(true));

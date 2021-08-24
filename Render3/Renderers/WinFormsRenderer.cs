@@ -1,4 +1,7 @@
-﻿using Render3.Components;
+﻿#define WinFormsRenderer //Comment out to disable OpenTKRenderer
+
+#if WinFormsRenderer
+using Render3.Components;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,8 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-namespace Render3.Core
+using Render3.Core;
+namespace Render3.Renderers
 {
 
     public class WinFormsRenderer : Renderer
@@ -25,20 +28,13 @@ namespace Render3.Core
             this.target = target;
             g = target.CreateGraphics();
         }
-        public override void Clean()
-        {
-            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 255)))
-            {
-                bmg.FillRectangle(brush, new Rectangle(new Point(0, 0), target.Size));
-            }
-        }
-        public override void DrawTriangle(Point2[] vertices,Color c)
+        public override void DrawTriangle(Point2[] vertices,Core.Color c)
         {
             Point[] points = new Point[vertices.Length];
             int i = 0;
             foreach (Point2 vertex in vertices)
             {
-                points[i++] = vertex.ToPoint();
+                points[i++] = vertex.ToWinFormsPoint();
             }
             if (((int)renderMode & 1) != 0)
             {
@@ -62,6 +58,10 @@ namespace Render3.Core
             this.screenSizeCache = screenSize;
             progress = new Bitmap((int)screenSize.width,(int)screenSize.height);
             bmg = Graphics.FromImage(progress);
+            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 255)))
+            {
+                bmg.FillRectangle(brush, new Rectangle(new Point(0, 0), target.Size));
+            }
         }
 
         public override void StopDrawing()
@@ -71,3 +71,4 @@ namespace Render3.Core
         }
     }
 }
+#endif

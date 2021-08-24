@@ -119,7 +119,7 @@ namespace Render3.Core
             this.x = x;
             this.y = y;
         }
-        public Point ToPoint()
+        public Point ToWinFormsPoint()
         {
             try
             {
@@ -129,6 +129,11 @@ namespace Render3.Core
             {
                 return new Point(-5, -5);
             }
+        }
+
+        public float[] ToOpenTKFloatArr()
+        {
+            return new float[] { (float)x, (float)y, 0 };
         }
         public override string ToString()
         {

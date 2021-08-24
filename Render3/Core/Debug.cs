@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Render3.Core
 {
     public static class Debug
     {
+        public static bool enableLog = true;
         internal static bool crashed = false;
         public static void Print<T>(T obj)
         {
-            Console.WriteLine(obj);
+            if (enableLog)
+                Console.WriteLine(obj);
         }
         public static void PrintArray<T>(T[] objs)
         {
@@ -27,12 +25,16 @@ namespace Render3.Core
             crashed = true;
             System.Windows.Forms.Application.Run(new CrashForm());
         }
-        public static void PrintArray<T>(List<T> objs)
+        public static void PrintList<T>(List<T> objs)
         {
             foreach (T obj in objs)
             {
                 Print(obj);
             }
+        }
+        public static void Dump(this object o)
+        {
+            Print(o);
         }
     }
 }

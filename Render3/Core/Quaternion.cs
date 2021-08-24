@@ -166,7 +166,7 @@ namespace Render3.Core
 
         }
         private double CopySign(double x, double y) => y < 0 ? -x:x;
-        public double[] ToEulerAngles()
+        /*public double[] ToEulerAngles()
         {
             Quaternion q = this;
             double[] angles = new double[3];
@@ -189,9 +189,9 @@ namespace Render3.Core
             angles[1] = Math.Atan2(siny_cosp, cosy_cosp);
 
             return angles;
-        }
+        }*/
 
-        public static Quaternion Euler(double yaw, double pitch, double roll, AngleUnit inputUnit)
+        public static Quaternion Euler(double pitch, double yaw, double roll, AngleUnit inputUnit)
         {
             yaw = AngleConvert(yaw, inputUnit, AngleUnit.Radians);
             pitch = AngleConvert(pitch, inputUnit, AngleUnit.Radians);

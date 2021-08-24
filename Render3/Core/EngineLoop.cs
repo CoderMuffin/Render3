@@ -14,7 +14,7 @@ namespace Render3.Core
         public double timeElapsed;
         public Scene scene;
         public event Action RenderEvent;
-        public EngineLoop(Scene s)
+        public EngineLoop(Scene s,double fps)
         {
             this.scene = s;
             System.Timers.Timer ts = new System.Timers.Timer();
@@ -22,7 +22,7 @@ namespace Render3.Core
             ts.Elapsed += RenderStart;
             ts.Enabled = true;
             renderTimer = new System.Timers.Timer();
-            renderTimer.Interval = 16;
+            renderTimer.Interval = 1000/fps;
             renderTimer.Elapsed += Render;
            
             renderTimer.Enabled = false;
@@ -50,16 +50,13 @@ namespace Render3.Core
             }
             try
             {
-                scene.camera.screenSize = new Dimensions2(300,300);
+                scene.camera.screenSize = new Dimensions2(100,50);
                 scene.camera.RenderMeshes(scene);
             } catch (InvalidOperationException)
             {
                 Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
             }
-            if (RenderEvent != null)
-            {
-                RenderEvent();
-            }
+            RenderEvent?.Invoke();
         }
     }
 }
