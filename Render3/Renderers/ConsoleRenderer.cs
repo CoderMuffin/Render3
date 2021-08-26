@@ -55,7 +55,8 @@ namespace Render3.Renderers
             int err = dx + dy;  /* error value e_xy */
             while (true)
             {   /* loop */
-                screenArr[y0][x0]=new Color(1,1,1);
+                if (InBounds(new Point2(x0,y0)))
+                    screenArr[y0][x0] = new Color(1, 1, 1);
                 if (x0 == x1 && y0 == y1) break;
                 int e2 = 2 * err;
                 if (e2 >= dy)

@@ -72,14 +72,8 @@ namespace Render3.Components
             {
                 return new Point2(p.x * 100000, p.y * 100000);
             }
-            try
-            {
-                return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.width / 2, screenSize.height / 2);
-            }
-            catch (OverflowException)
-            {
-                return new Point2(-5, -5);
-            }
+            return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.width / 2, screenSize.height / 2);
+            
         }
         public static bool OutOfBounds(Dimensions2 bounds, Point2 p1, Point2 p2)
         {
@@ -100,13 +94,12 @@ namespace Render3.Components
             }
             foreach (Face f in orderedTriangles.Reverse<Face>())
             {
-
                 try
                 {
                     Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
                     double color = ((f.WorldNormal - (-s.light.direction.normalized))).magnitude / 2;
                     renderer.DrawTriangle(vertices,Core.Color.Merge(m.color, Core.Color.Merge(new Core.Color(1 - color, 1 - color, 1 - color), s.light.color)));
-
+                    
                 }
                 /*catch (InvalidOperationException)
                 {
@@ -146,6 +139,7 @@ namespace Render3.Components
         {
 
             //this.screenSize = target.Size;
+            renderer.UpdateScreenSize(screenSize);
             renderer.StartDrawing(screenSize);
 
             /*foreach (SceneObject o in scene.objects)

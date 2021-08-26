@@ -14,5 +14,25 @@ namespace Render3.Core
             t = t > 1 ? 1 : t;
             return a + (b - a) * t;
         }
+        public static bool BetweenInclusive(double a, double x, double b)
+        {
+            if (a>b)
+            {
+                double tmp = a;
+                a = b;
+                b = tmp;
+            }
+            return a <= x && x <= b;
+        }
+        public static bool BetweenExclusive(double a, double x, double b)
+        {
+            if (a > b)
+            {
+                double tmp = a;
+                a = b;
+                b = tmp;
+            }
+            return a < x && x < b;
+        }
     }
 }

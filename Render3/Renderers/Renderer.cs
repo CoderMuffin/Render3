@@ -3,7 +3,16 @@ namespace Render3.Renderers
 {
     public abstract class Renderer
     {
-        public abstract void DrawTriangle(Point2[] vertices,Color c);
+        protected Dimensions2 screenSize;
+        public void UpdateScreenSize(Dimensions2 screenSize)
+        {
+            this.screenSize = screenSize;
+        }
+        protected bool InBounds(Point2 p)
+        {
+            return p.In(screenSize);
+        }
+        public abstract void DrawTriangle(Point2[] vertices, Color c);
         public abstract void StartDrawing(Dimensions2 screenSize);
         public abstract void StopDrawing();
         public RenderMode renderMode=RenderMode.Shaded;

@@ -10,6 +10,9 @@ namespace Render3.Core
     public struct Direction3
     {
         public double x, y, z;
+        public void SetX(double x) { this.x = x; }
+        public void SetY(double y) { this.y = y; }
+        public void SetZ(double z) { this.z = z; }
         #region Constructors
         public Direction3(double v)
         {
@@ -114,6 +117,8 @@ namespace Render3.Core
     public struct Point2
     {
         public double x, y;
+        public void SetX(double x) { this.x = x; }
+        public void SetY(double y) { this.y = y; }
         public Point2(double x, double y)
         {
             this.x = x;
@@ -121,14 +126,7 @@ namespace Render3.Core
         }
         public Point ToWinFormsPoint()
         {
-            try
-            {
-                return new Point(Convert.ToInt32(x), Convert.ToInt32(y));
-            }
-            catch (OverflowException)
-            {
-                return new Point(-5, -5);
-            }
+            return new Point(Convert.ToInt32(x), Convert.ToInt32(y));
         }
 
         public float[] ToOpenTKFloatArr()
@@ -189,16 +187,25 @@ namespace Render3.Core
             hashCode = hashCode * -1521134295 + y.GetHashCode();
             return hashCode;
         }
+
+
+
         public static Point2 operator !(Point2 me)
         {
-            Point2 me2 = -me;
             return me * new Point2(-1, -1);
         }
         #endregion Operator overloads
+        public bool In(Dimensions2 inside)
+        {
+            return ExtraMath.BetweenExclusive(inside.topLeft.x,x,inside.bottomRight.x)&&ExtraMath.BetweenExclusive(inside.topLeft.y,y,inside.bottomRight.y);
+        }
     }
     public struct Point3
     {
         public double x, y, z;
+        public void SetX(double x) { this.x = x; }
+        public void SetY(double y) { this.y = y; }
+        public void SetZ(double z) { this.z = z; }
         public Point3(double x, double y, double z)
         {
             this.x = x;
