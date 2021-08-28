@@ -13,7 +13,7 @@ namespace Render3.Renderers
             return p.In(screenSize);
         }
         public abstract void DrawTriangle(Point2[] vertices, Color c);
-        public abstract void StartDrawing(Dimensions2 screenSize);
+        public abstract void StartDrawing();
         public abstract void StopDrawing();
         public RenderMode renderMode=RenderMode.Shaded;
     }

@@ -275,11 +275,33 @@ namespace Render3.Core
             hashCode = hashCode * -1521134295 + z.GetHashCode();
             return hashCode;
         }
+
+
+
         public static Point3 operator !(Point3 me)
         {
             return -me;
         }
         #endregion Operator overloads
+        public Point3 GetTweenState()
+        {
+            return this;
+        }
+
+        /*public void Lerp(dynamic obj, Point3 from, Point3 to, double progress)
+        {
+            Console.WriteLine("Lerped to " + ExtraMath.Lerp(from.z, to.z, progress));
+            obj.x = ExtraMath.Lerp(from.x, to.x, progress);
+                obj.y = ExtraMath.Lerp(from.y, to.y, progress);
+                obj.z=ExtraMath.Lerp(from.z, to.z, progress);
+        }
+
+        public void Clone(ref Point3 output)
+        {
+            output.x = x;
+            output.y = y;
+            output.z = z;
+        }*/
     }
     public struct Dimensions2
     {

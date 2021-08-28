@@ -1,4 +1,4 @@
-﻿#define WinFormsRenderer //Comment out to disable OpenTKRenderer
+﻿#define WinFormsRenderer //Comment out to disable WinFormsRenderer
 
 #if WinFormsRenderer
 using Render3.Components;
@@ -20,7 +20,6 @@ namespace Render3.Renderers
         private Graphics bmg;
         SolidBrush brush=new SolidBrush(System.Drawing.Color.Black);
 
-        private Dimensions2 screenSizeCache;
         Bitmap progress;
         public Form target;
         public WinFormsRenderer(Form target)
@@ -38,11 +37,11 @@ namespace Render3.Renderers
             }
             if (((int)renderMode & 1) != 0)
             {
-                if (!Camera.OutOfBounds(screenSizeCache, vertices[0], vertices[1]))
+                if (!Camera.OutOfBounds(screenSize, vertices[0], vertices[1]))
                     bmg.DrawLine(gpen, points[0], points[1]);
-                if (!Camera.OutOfBounds(screenSizeCache, vertices[0], vertices[2]))
+                if (!Camera.OutOfBounds(screenSize, vertices[0], vertices[2]))
                     bmg.DrawLine(gpen, points[0], points[2]);
-                if (!Camera.OutOfBounds(screenSizeCache, vertices[2], vertices[1]))
+                if (!Camera.OutOfBounds(screenSize, vertices[2], vertices[1]))
                     bmg.DrawLine(gpen, points[2], points[1]);
             }
             if (((int)renderMode & 2) != 0)
@@ -53,9 +52,8 @@ namespace Render3.Renderers
             }
         }
 
-        public override void StartDrawing(Dimensions2 screenSize)
+        public override void StartDrawing()
         {
-            this.screenSizeCache = screenSize;
             progress = new Bitmap((int)screenSize.width,(int)screenSize.height);
             bmg = Graphics.FromImage(progress);
             using (SolidBrush brush = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 255)))

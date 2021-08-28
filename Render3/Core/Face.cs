@@ -19,7 +19,7 @@
                 return n.normalized;
             }
         }
-        public Direction3 WorldNormal
+        public Direction3 worldNormal
         {
             get
             {
@@ -56,7 +56,7 @@
         /// <summary>
         /// The center of the face on the mesh.
         /// </summary>
-        public Point3 WorldCenter
+        public Point3 worldCenter
         {
             get
             {

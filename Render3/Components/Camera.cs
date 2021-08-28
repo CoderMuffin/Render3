@@ -32,6 +32,9 @@ namespace Render3.Components
         public int clipNear;
         public CameraFovMode fovMode = CameraFovMode.Horizontal;
         private double afov; private double eyeDist;
+        List<Mesh> sceneMeshes = new List<Mesh>();
+        List<Mesh> orderedMeshes = new List<Mesh>();
+        List<Face> orderedTriangles = new List<Face>();
         public Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
@@ -81,23 +84,24 @@ namespace Render3.Components
         }
         public void RenderFaces(Scene s, Mesh m)
         {
-            List<Face> orderedTriangles = new List<Face>();
+            orderedTriangles.Clear();
             foreach (Face f in m.geometry.Triangles)
             {
                 int i = 0;
                 foreach (Face toCompare in orderedTriangles)
                 {
-                    if (TransformRelative(f.WorldCenter).z < TransformRelative(toCompare.WorldCenter).z) break;
+                    if (TransformRelative(f.worldCenter).z < TransformRelative(toCompare.worldCenter).z) break;
                     i++;
                 }
                 orderedTriangles.Insert(i, f);
             }
-            foreach (Face f in orderedTriangles.Reverse<Face>())
+            for (int i = orderedTriangles.Count - 1; i > 0; i--)
             {
+                Face f = orderedTriangles[i];
                 try
                 {
                     Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
-                    double color = ((f.WorldNormal - (-s.light.direction.normalized))).magnitude / 2;
+                    double color = ((f.worldNormal - (-s.light.direction.normalized))).magnitude / 2;
                     renderer.DrawTriangle(vertices,Core.Color.Merge(m.color, Core.Color.Merge(new Core.Color(1 - color, 1 - color, 1 - color), s.light.color)));
                     
                 }
@@ -107,7 +111,7 @@ namespace Render3.Components
                 }*/
                 catch (ArgumentOutOfRangeException)
                 {
-                    Console.WriteLine("[!] Render3.Renderer.Camera.RenderFaces(): Render boot error.");
+                    Console.WriteLine("[!] Render3.Core.Camera.RenderFaces(): Render boot error.");
                     err += 2;
                     if (err > 10)
                     {
@@ -140,14 +144,14 @@ namespace Render3.Components
 
             //this.screenSize = target.Size;
             renderer.UpdateScreenSize(screenSize);
-            renderer.StartDrawing(screenSize);
+            renderer.StartDrawing();
 
             /*foreach (SceneObject o in scene.objects)
             {
                 if (o.GetComponent<Mesh>()!=null&&o.GetComponent<Mesh>().enabled==true)
                     RenderFaces( b, o.GetComponent<Mesh>());
             }*/
-            List<Mesh> sceneMeshes = new List<Mesh>();
+            sceneMeshes.Clear();
             //TODO: order faces???//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             foreach (SceneObject o in scene.objects)
             {
@@ -155,7 +159,7 @@ namespace Render3.Components
                 if (o.GetComponent<Mesh>() != null && o.GetComponent<Mesh>().enabled == true)
                     sceneMeshes.Add(o.GetComponent<Mesh>());
             }
-            List<Mesh> orderedMeshes = new List<Mesh>();
+            orderedMeshes.Clear();
             foreach (Mesh m in sceneMeshes)
             {
                 int i = 0;
