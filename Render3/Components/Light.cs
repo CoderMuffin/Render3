@@ -9,7 +9,7 @@ namespace Render3.Components
 {
     public class Light
     {
-        public Direction3 direction=new Direction3(1,1,2);
+        public Direction3 direction=new Direction3(-1,1,2);
         public Color color=new Color(1,1,1);
     }
 }

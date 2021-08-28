@@ -35,11 +35,11 @@ namespace Render3.Components
         List<Mesh> sceneMeshes = new List<Mesh>();
         List<Mesh> orderedMeshes = new List<Mesh>();
         List<Face> orderedTriangles = new List<Face>();
-        public Point3 TransformRelative(Point3 toTransform)
+        private Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
             dir = (sceneObject.transform.rotation).Inverse() * dir; // rotate it
-            toTransform = dir + sceneObject.transform.position; // calculate rotated point
+            toTransform = dir + sceneObject.transform.position; // move it back
 
             return toTransform - sceneObject.transform.position;
         }
@@ -63,10 +63,11 @@ namespace Render3.Components
             }
         }
 
-        public Camera(double fov,Renderer renderer)
+        public Camera(double fov,Renderer renderer,Dimensions2 screenSize)
         {
             this.fov = fov;
             this.renderer = renderer;
+            this.screenSize = screenSize;
         }
         public Point2 WorldToScreen(Point3 p)
         {

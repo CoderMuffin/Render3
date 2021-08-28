@@ -50,7 +50,7 @@ namespace Render3.Core
             }
             try
             {
-                scene.camera.screenSize = new Dimensions2(100,50);
+                
                 scene.camera.RenderMeshes(scene);
             } catch (InvalidOperationException)
             {
