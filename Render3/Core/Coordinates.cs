@@ -288,15 +288,15 @@ namespace Render3.Core
             return this;
         }
 
-        /*public void Lerp(dynamic obj, Point3 from, Point3 to, double progress)
+        /*public void Lerp(Point3 from, Point3 to, double progress)
         {
             Console.WriteLine("Lerped to " + ExtraMath.Lerp(from.z, to.z, progress));
-            obj.x = ExtraMath.Lerp(from.x, to.x, progress);
-                obj.y = ExtraMath.Lerp(from.y, to.y, progress);
-                obj.z=ExtraMath.Lerp(from.z, to.z, progress);
-        }
+            x = ExtraMath.Lerp(from.x, to.x, progress);
+            y = ExtraMath.Lerp(from.y, to.y, progress);
+            z = ExtraMath.Lerp(from.z, to.z, progress);
+        }*/
 
-        public void Clone(ref Point3 output)
+        /*public void Clone(ref Point3 output)
         {
             output.x = x;
             output.y = y;

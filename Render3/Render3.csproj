@@ -75,6 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Async\Channel.cs" />
+    <Compile Include="Async\Timer.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\Light.cs" />
     <Compile Include="Core\Tween.cs" />
@@ -83,6 +85,9 @@
     <Compile Include="Core\ExtraMath.cs" />
     <Compile Include="Core\Input.cs" />
     <Compile Include="Core\Render3Object.cs" />
+    <Compile Include="Async\Flag.cs" />
+    <Compile Include="Async\Flow.cs" />
+    <Compile Include="Async\Promise.cs" />
     <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\ConsoleRenderer.cs" />
     <Compile Include="Renderers\OpenTKRenderer.cs" />

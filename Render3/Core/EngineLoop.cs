@@ -4,28 +4,24 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Render3.Core;
+//using System.Windows.Forms;
+using Render3.Async;
 namespace Render3.Core
 {
     public class EngineLoop : Render3Object
     {
-        public System.Timers.Timer renderTimer;
+        public Timer renderTimer;
         public double timeElapsed;
         public Scene scene;
-        public event Action RenderEvent;
+        public event Action<double> RenderEvent;
         public EngineLoop(Scene s,double fps)
         {
             this.scene = s;
-            System.Timers.Timer ts = new System.Timers.Timer();
-            ts.Interval = 500;
-            ts.Elapsed += RenderStart;
-            ts.Enabled = true;
-            renderTimer = new System.Timers.Timer();
-            renderTimer.Interval = 1000/fps;
-            renderTimer.Elapsed += Render;
+            Flow.Go(() => {
+                Flow.Wait(500);
+                renderTimer = Timer.Every(1000 / fps).Do(Render, false);
+            });
            
-            renderTimer.Enabled = false;
             /*System.Timers.Timer t = new System.Timers.Timer();
             t.Interval = 10;
             t.Elapsed += UpdateTime;
@@ -34,15 +30,11 @@ namespace Render3.Core
             
         }
 
-        private void RenderStart(Object o, System.Timers.ElapsedEventArgs e)
-        {
-            renderTimer.Enabled = true;
-        }
         private void UpdateTime(Object o, System.Timers.ElapsedEventArgs e)
         {
             timeElapsed += 0.01;
         }
-        public void Render(Object o, System.Timers.ElapsedEventArgs e)
+        private void Render(double deltaTime)
         {
             if (Debug.crashed)
             {
@@ -56,7 +48,7 @@ namespace Render3.Core
             {
                 Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
             }
-            RenderEvent?.Invoke();
+            RenderEvent?.Invoke(deltaTime);
         }
     }
 }
