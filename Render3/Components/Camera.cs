@@ -96,21 +96,21 @@ namespace Render3.Components
                 }
                 orderedTriangles.Insert(i, f);
             }
-            for (int i = orderedTriangles.Count - 1; i > 0; i--)
+            for (int i = orderedTriangles.Count - 1; i >= 0; i--)
             {
                 Face f = orderedTriangles[i];
-                try
-                {
+                //try
+                //{
                     Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
                     double color = ((f.worldNormal - (-s.light.direction.normalized))).magnitude / 2;
                     renderer.DrawTriangle(vertices,Core.Color.Merge(m.color, Core.Color.Merge(new Core.Color(1 - color, 1 - color, 1 - color), s.light.color)));
                     
-                }
+                //}
                 /*catch (InvalidOperationException)
                 {
                     Console.WriteLine("[X] Render3.Renderer.Camera.RenderFaces(): Display already in use"); Disable batch rendering
                 }*/
-                catch (ArgumentOutOfRangeException)
+                /*catch (ArgumentOutOfRangeException)
                 {
                     Console.WriteLine("[!] Render3.Core.Camera.RenderFaces(): Render boot error.");
                     err += 2;
@@ -121,7 +121,7 @@ namespace Render3.Components
                                           "------------------------");
                         Debug.LaunchErrorForm();
                     }
-                }
+                }*/
                 /*foreach (Mesh childMesh in m.sceneObject.GetDescendantComponents<Mesh>(true))
                 {
                     RenderFaces(scene, b, childMesh);

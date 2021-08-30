@@ -48,7 +48,7 @@ namespace Render3.Core
             {
                 Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
             }
-            RenderEvent?.Invoke(deltaTime);
+            RenderEvent?.Invoke(deltaTime/1000);
         }
     }
 }
