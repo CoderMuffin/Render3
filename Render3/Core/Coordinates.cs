@@ -121,10 +121,12 @@ namespace Render3.Core
             this.x = x;
             this.y = y;
         }
+#if WINFORMS
         public Point ToWinFormsPoint()
         {
             return new Point(Convert.ToInt32(x), Convert.ToInt32(y));
         }
+#endif
 
         public float[] ToOpenTKFloatArr()
         {
@@ -316,10 +318,12 @@ namespace Render3.Core
                 this.topLeft = new Point2();
                 this.bottomRight = new Point2(width,height);
             }
+            #if WINFORMS
         public static implicit operator Size(Dimensions2 me)
         {
             return new Size((int)Math.Round(me.width), (int)Math.Round(me.height));
         }
+        #endif
     }
     public struct Dimensions3
     {
