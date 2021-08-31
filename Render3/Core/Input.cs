@@ -8,7 +8,7 @@ namespace Render3.Core
         public bool this[char ch] {
             get => down.Contains(ch);
         }
-        private HashSet<char> down;
+        private HashSet<char> down = new HashSet<char>();
         public Flow inputFlow;
         public event Action<char> OnKey;
         public Input Initialize(Func<char> read)

@@ -34,14 +34,15 @@ namespace Render3.Core
             {
                 return;
             }
-            try
-            {
+            //try
+            //{
                 
                 scene.camera.RenderMeshes(scene);
-            } catch (InvalidOperationException)
-            {
-                Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
-            }
+            //} catch (InvalidOperationException e)
+           // {
+                //throw e;
+                //Console.WriteLine("Render3.Renderer.EngineLoop.Render(): Screen is busy");
+            //}
             RenderEvent?.Invoke(deltaTime/1000);
         }
     }

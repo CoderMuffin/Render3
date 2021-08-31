@@ -29,7 +29,7 @@ namespace Render3.Components
         private double afov; private double eyeDist;
         List<Mesh> sceneMeshes = new List<Mesh>();
         List<Mesh> orderedMeshes = new List<Mesh>();
-        List<Face> orderedTriangles = new List<Face>();
+        SortedDictionary<double, Face> sortedTriangles = new SortedDictionary<double, Face>();
         private Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
@@ -76,20 +76,25 @@ namespace Render3.Components
         }
         public void RenderFaces(Scene s, Mesh m)
         {
-            orderedTriangles.Clear();
+            sortedTriangles.Clear();
+            double iterMod = 0;
             foreach (Face f in m.geometry.Triangles)
             {
-                int i = 0;
-                foreach (Face toCompare in orderedTriangles)
-                {
-                    if (TransformRelative(f.worldCenter).z < TransformRelative(toCompare.worldCenter).z) break;
-                    i++;
-                }
-                orderedTriangles.Insert(i, f);
+                sortedTriangles.Add(-TransformRelative(f.worldCenter).z + iterMod,f);
+                iterMod += 0.0001f;
+                //int i = 0;
+                //foreach (Face toCompare in orderedTriangles)
+                //{
+                //    if (TransformRelative(f.worldCenter).z < TransformRelative(toCompare.worldCenter).z) break;
+                //    i++;
+                //}
+                //orderedTriangles.Insert(i, f);
             }
-            for (int i = orderedTriangles.Count - 1; i >= 0; i--)
+            //for (int i = orderedTriangles.Count - 1; i >= 0; i--)
+            foreach (KeyValuePair<double,Face> kv in sortedTriangles)
             {
-                Face f = orderedTriangles[i];
+                Face f = kv.Value;
+                //Face f = orderedTriangles[i];
                 //try
                 //{
                     Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };

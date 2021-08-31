@@ -205,7 +205,10 @@ namespace Render3.Renderers
                 }
                 for (int x = tx0; x < tx1; x++)
                 {
-                    screenArr[(int)p.y][x] = d;
+                    if (InBounds(new Point2(x, p.y)))
+                    {
+                        screenArr[(int)p.y][x] = d;
+                    }
                 }
             }
         }
