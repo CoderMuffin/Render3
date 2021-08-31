@@ -1,11 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Render3.Core;
 using Render3.Components;
 using Render3.Renderers;
@@ -81,7 +79,8 @@ namespace Render3.Components
         }
         public static bool OutOfBounds(Dimensions2 bounds, Point2 p1, Point2 p2)
         {
-            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToWinFormsPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToWinFormsPoint(), new Size(1, 1))));
+            //return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToWinFormsPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToWinFormsPoint(), new Size(1, 1))));
+            return false;
         }
         public void RenderFaces(Scene s, Mesh m)
         {

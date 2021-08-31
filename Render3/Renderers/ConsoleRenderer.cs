@@ -10,7 +10,8 @@ namespace Render3.Renderers
     public class ConsoleRenderer : Renderer
     {
         Color[][] screenArr = new Color[0][];
-
+        public Color lastColor;
+        public bool gloriousTechnicolor;
         public override void DrawTriangle(Point2[] vertices, Color c)
         {
             if (((int)renderMode & 2) != 0)
@@ -205,36 +206,45 @@ namespace Render3.Renderers
                 }
             }
         }
-        public char ColorToChar(Color c)
+        public string ColorToChar(Color c)
         {
-            double avgValue = (c.r + c.g + c.b) / 3;
+            if (gloriousTechnicolor) {
+                if (!(lastColor==c)) {
+                    lastColor=c;
+                    return "\x1b[38;2;"+((int)(c.r*255))+";"+((int)(c.g*255))+";"+((int)(c.b*255))+"m\u2588";
+                } else {
+                    return "\u2588";
+                }
+            } else {
+                double avgValue = (c.r + c.g + c.b) / 3;
             if (avgValue < 0.1)
             {
-                return ' ';
+                return " ";
             }
             else if (avgValue < 0.2)
             {
-                return '.';
+                return ".";
             }
             else if (avgValue < 0.3)
             {
-                return '~';
+                return "~";
             }
             else if (avgValue < 0.5)
             {
-                return '&';
+                return "&";
             }
             else if (avgValue < 0.7)
             {
-                return '%';
+                return "%";
             }
             else if (avgValue < 0.8)
             {
-                return '#';
+                return "#";
             }
             else
             {
-                return '@';
+                return "@";
+            }
             }
         }
     }

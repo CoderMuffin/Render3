@@ -1,0 +1,2 @@
+language = "bash"
+run = "mcs -out:main.exe $(find . -type f -name \"*.cs\");mono main.exe"

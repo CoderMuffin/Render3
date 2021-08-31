@@ -1,4 +1,4 @@
-﻿#define WinFormsRenderer //Comment out to disable WinFormsRenderer
+﻿//#define WinFormsRenderer //Comment out to disable WinFormsRenderer
 
 #if WinFormsRenderer
 using Render3.Components;

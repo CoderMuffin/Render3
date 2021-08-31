@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -123,10 +122,6 @@ namespace Render3.Core
         {
             this.x = x;
             this.y = y;
-        }
-        public Point ToWinFormsPoint()
-        {
-            return new Point(Convert.ToInt32(x), Convert.ToInt32(y));
         }
 
         public float[] ToOpenTKFloatArr()
@@ -319,10 +314,6 @@ namespace Render3.Core
                 this.topLeft = new Point2();
                 this.bottomRight = new Point2(width,height);
             }
-        public static implicit operator Size(Dimensions2 me)
-        {
-            return new Size((int)Math.Round(me.width), (int)Math.Round(me.height));
-        }
     }
     public struct Dimensions3
     {

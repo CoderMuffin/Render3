@@ -23,7 +23,7 @@ namespace Render3.Core
         {
             if (crashed) return;
             crashed = true;
-            System.Windows.Forms.Application.Run(new CrashForm());
+            //System.Windows.Forms.Application.Run(new CrashForm());
         }
         public static void PrintList<T>(List<T> objs)
         {
