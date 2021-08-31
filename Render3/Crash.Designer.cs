@@ -1,4 +1,5 @@
-﻿namespace Render3
+﻿#if WINFORMS
+namespace Render3
 {
     partial class CrashForm
     {
@@ -73,3 +74,4 @@
         private System.Windows.Forms.Label label1;
     }
 }
+#endif

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Render3.Core
 {
@@ -39,5 +40,26 @@ namespace Render3.Core
         }
         private double _a;
         public double a { get { return _a; } set { if (value >= 0 && value <= 1) _a = value; else throw new InvalidOperationException("a should be between 0 and 1"); } }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public static bool operator==(Color a,Color b)
+        {
+            return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+        }
+
+        public static bool operator !=(Color a, Color b)
+        {
+            return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a;
+        }
+
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

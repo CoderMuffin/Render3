@@ -19,12 +19,13 @@ namespace Render3.Core
                 Print(obj);
             }
         }
-        internal static void LaunchErrorForm()
+        /*internal static void LaunchErrorForm()
         {
             if (crashed) return;
             crashed = true;
             System.Windows.Forms.Application.Run(new CrashForm());
         }
+*/
         public static void PrintList<T>(List<T> objs)
         {
             foreach (T obj in objs)

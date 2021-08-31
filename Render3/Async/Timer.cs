@@ -10,11 +10,6 @@ namespace Render3.Async
     {
         public double ms;
         public Timer Do(Action<double> todo, bool triggerInitial) => new Timer(ms, todo, triggerInitial);
-
-        private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
     }
     public class Timer
     {

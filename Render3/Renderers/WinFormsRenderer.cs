@@ -1,6 +1,4 @@
-﻿#define WinFormsRenderer //Comment out to disable WinFormsRenderer
-
-#if WinFormsRenderer
+﻿#if WINFORMS //disable in render3 build settings - compilational compiler signals
 using Render3.Components;
 using System;
 using System.Collections.Generic;
@@ -37,11 +35,11 @@ namespace Render3.Renderers
             }
             if (((int)renderMode & 1) != 0)
             {
-                if (!Camera.OutOfBounds(screenSize, vertices[0], vertices[1]))
+                if (!OutOfBounds(screenSize, vertices[0], vertices[1]))
                     bmg.DrawLine(gpen, points[0], points[1]);
-                if (!Camera.OutOfBounds(screenSize, vertices[0], vertices[2]))
+                if (!OutOfBounds(screenSize, vertices[0], vertices[2]))
                     bmg.DrawLine(gpen, points[0], points[2]);
-                if (!Camera.OutOfBounds(screenSize, vertices[2], vertices[1]))
+                if (!OutOfBounds(screenSize, vertices[2], vertices[1]))
                     bmg.DrawLine(gpen, points[2], points[1]);
             }
             if (((int)renderMode & 2) != 0)
@@ -65,7 +63,11 @@ namespace Render3.Renderers
         public override void StopDrawing()
         {
             g.DrawImage(progress, new Point(0, 0));
-            
+
+        }
+        public bool OutOfBounds(Dimensions2 bounds, Point2 p1, Point2 p2)
+        {
+            return (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p1.ToWinFormsPoint(), new Size(1, 1)))) && (!new Rectangle(new Point(0, 0), bounds).IntersectsWith(new Rectangle(p2.ToWinFormsPoint(), new Size(1, 1))));
         }
     }
 }
