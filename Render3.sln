@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Render3", "Render3\Render3.csproj", "{23A2FDF9-AA8A-4A6C-84B8-10EA19A091FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Render3TestProject", "..\CR3TestProject\CR3TestProject\Render3TestProject.csproj", "{D0772E4F-7763-4F62-9633-95E93CA2FF26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Render3ConsoleTest", "Render3ConsoleTest\Render3ConsoleTest.csproj", "{0CB43DEB-00CA-44AA-99D0-2F88F129B1D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D0772E4F-7763-4F62-9633-95E93CA2FF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0772E4F-7763-4F62-9633-95E93CA2FF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0772E4F-7763-4F62-9633-95E93CA2FF26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB43DEB-00CA-44AA-99D0-2F88F129B1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB43DEB-00CA-44AA-99D0-2F88F129B1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB43DEB-00CA-44AA-99D0-2F88F129B1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB43DEB-00CA-44AA-99D0-2F88F129B1D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
