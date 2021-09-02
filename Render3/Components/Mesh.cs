@@ -14,7 +14,7 @@ namespace Render3.Components
         public IGeometry geometry
         {
             get { return _geometry; }
-            set { if (_geometry != null) _geometry.Triangles.ForEach(x => x.mesh = null); _geometry = value; _geometry.Triangles.ForEach(x => x.mesh = this); }
+            set { if (_geometry != null) _geometry.triangles.ForEach(x => x.mesh = null); _geometry = value; _geometry.triangles.ForEach(x => x.mesh = this); }
         }
         private IGeometry _geometry;
         public Color color = new Color(0.5, 0.5, 0.5);
@@ -28,7 +28,7 @@ namespace Render3.Components
             worldVertices.Clear();
             for (int i = 0; i < geometry.Vertices.Count; i++)
             {
-                worldVertices.Add((sceneObject.transform.rotation * (geometry.Vertices[i] * sceneObject.transform.scale.ToPoint3())) + sceneObject.transform.position);
+                worldVertices.Add((sceneObject.worldRotation * (geometry.Vertices[i] * sceneObject.worldScale.ToPoint3())) + sceneObject.worldPosition);
             }
         }
         //internal List<Point3> orderedTriangles= new List<Point3>();

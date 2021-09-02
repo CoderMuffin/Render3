@@ -29,14 +29,14 @@ namespace Render3.Components
         private double afov; private double eyeDist;
         List<Mesh> sceneMeshes = new List<Mesh>();
         List<Mesh> orderedMeshes = new List<Mesh>();
-        SortedDictionary<double, Face> sortedTriangles = new SortedDictionary<double, Face>();
+        Sorter<double,Face> sortedTriangles = new Sorter<double,Face>();
         private Point3 TransformRelative(Point3 toTransform)
         {
-            Point3 dir = toTransform - sceneObject.transform.position; // get point direction relative to pivot
-            dir = (sceneObject.transform.rotation).Inverse() * dir; // rotate it
-            toTransform = dir + sceneObject.transform.position; // move it back
+            Point3 dir = toTransform - sceneObject.worldPosition; // get point direction relative to pivot
+            dir = (sceneObject.worldRotation).Inverse() * dir; // rotate it
+            toTransform = dir + sceneObject.worldPosition; // move it back
 
-            return toTransform - sceneObject.transform.position;
+            return toTransform - sceneObject.worldPosition;
         }
         public double fov
         {
@@ -77,11 +77,9 @@ namespace Render3.Components
         public void RenderFaces(Scene s, Mesh m)
         {
             sortedTriangles.Clear();
-            double iterMod = 0;
-            foreach (Face f in m.geometry.Triangles)
+            foreach (Face f in m.geometry.triangles)
             {
-                sortedTriangles.Add(-TransformRelative(f.worldCenter).z + iterMod,f);
-                iterMod += 0.0001f;
+                sortedTriangles.Add(-TransformRelative(f.worldCenter).z,f);
                 //int i = 0;
                 //foreach (Face toCompare in orderedTriangles)
                 //{
@@ -91,7 +89,7 @@ namespace Render3.Components
                 //orderedTriangles.Insert(i, f);
             }
             //for (int i = orderedTriangles.Count - 1; i >= 0; i--)
-            foreach (KeyValuePair<double,Face> kv in sortedTriangles)
+            foreach (KeyValuePair<double,Face> kv in sortedTriangles.Walk())
             {
                 Face f = kv.Value;
                 //Face f = orderedTriangles[i];
@@ -162,7 +160,7 @@ namespace Render3.Components
                 int i = 0;
                 foreach (Mesh toCompare in orderedMeshes)
                 {
-                    if (TransformRelative(m.sceneObject.transform.position).z > TransformRelative(toCompare.sceneObject.transform.position).z) break;
+                    if (TransformRelative(m.sceneObject.worldPosition).z > TransformRelative(toCompare.sceneObject.worldPosition).z) break;
                     i++;
                 }
                 orderedMeshes.Insert(i, m);

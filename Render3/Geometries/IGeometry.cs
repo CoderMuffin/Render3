@@ -8,7 +8,7 @@ namespace Render3.Core
 {
     public interface IGeometry
     {
-        List<Face> Triangles { get; set; }
+        List<Face> triangles { get; set; }
         List<Point3> Vertices { get; set; }
     }
 }

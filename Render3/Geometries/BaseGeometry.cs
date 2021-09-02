@@ -23,7 +23,7 @@ namespace Render3.Geometries
                 new Point3(1, -1, 1),
                 new Point3(-1, -1, 1),
             });
-            bg.Triangles.AddRange(new Face[]
+            bg.triangles.AddRange(new Face[]
             {
                 new Face(bg, 0, 2, 1), //face front
 	            new Face(bg, 0, 3, 2),
@@ -41,12 +41,12 @@ namespace Render3.Geometries
             return bg;
         }
         public List<Point3> Vertices { get; set; }
-        public List<Face> Triangles { get; set; }
+        public List<Face> triangles { get; set; }
         public BaseGeometry(params Face[] triangles)
         {
             Vertices = new List<Point3>();
-            this.Triangles = new List<Face>();
-            this.Triangles.AddRange(triangles);
+            this.triangles = new List<Face>();
+            this.triangles.AddRange(triangles);
         }
     }
 }
