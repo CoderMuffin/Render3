@@ -29,7 +29,7 @@ namespace Render3.Components
         private double afov; private double eyeDist;
         List<Mesh> sceneMeshes = new List<Mesh>();
         List<Mesh> orderedMeshes = new List<Mesh>();
-        Sorter<double,Face> sortedTriangles = new Sorter<double,Face>();
+        Sorter<double, (Mesh, Face)> sortedTriangles = new Sorter<double, (Mesh, Face)>();
         private Point3 TransformRelative(Point3 toTransform)
         {
             Point3 dir = toTransform - sceneObject.worldPosition; // get point direction relative to pivot
@@ -74,12 +74,13 @@ namespace Render3.Components
             return new Point2(p.x * (eyeDist / p.z), p.y * (eyeDist / p.z)) + new Point2(screenSize.width / 2, screenSize.height / 2);
             
         }
-        public void RenderFaces(Scene s, Mesh m)
+        #region Obsolete
+        /*public void RenderFaces(Scene s, Mesh m)
         {
             sortedTriangles.Clear();
             foreach (Face f in m.geometry.triangles)
             {
-                sortedTriangles.Add(-TransformRelative(f.worldCenter).z,f);
+                //sortedTriangles.Add(-TransformRelative(f.worldCenter).z,f);
                 //int i = 0;
                 //foreach (Face toCompare in orderedTriangles)
                 //{
@@ -89,7 +90,7 @@ namespace Render3.Components
                 //orderedTriangles.Insert(i, f);
             }
             //for (int i = orderedTriangles.Count - 1; i >= 0; i--)
-            foreach (KeyValuePair<double,Face> kv in sortedTriangles.Walk())
+            /*foreach (KeyValuePair<double,Face> kv in sortedTriangles.Walk())
             {
                 Face f = kv.Value;
                 //Face f = orderedTriangles[i];
@@ -98,7 +99,7 @@ namespace Render3.Components
                     Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
                     double color = ((f.worldNormal - (-s.light.direction.normalized))).magnitude / 2;
                     renderer.DrawTriangle(vertices,Core.Color.Merge(m.color, Core.Color.Merge(new Core.Color(1 - color, 1 - color, 1 - color), s.light.color)));
-                    
+                    */
                 //}
                 /*catch (InvalidOperationException)
                 {
@@ -120,20 +121,21 @@ namespace Render3.Components
                 {
                     RenderFaces(scene, b, childMesh);
                 }*/
-            }
-        }
+           //}
+        //}
+        #endregion
 
-        public List<Mesh> GetFlatMeshTree(List<Mesh> submeshTree)
-        {
-            List<Mesh> ms = new List<Mesh>();
-            foreach (Mesh m in submeshTree)
-            {
-                ms.AddRange(GetFlatMeshTree(m.sceneObject.GetDescendantComponents<Mesh>(true)));
-                if (m.enabled)
-                    ms.Add(m);
-            }
-            return ms;
-        }
+        /*        public List<Mesh> GetFlatMeshTree(List<Mesh> submeshTree)
+                {
+                    List<Mesh> ms = new List<Mesh>();
+                    foreach (Mesh m in submeshTree)
+                    {
+                        ms.AddRange(GetFlatMeshTree(m.sceneObject.GetDescendantComponents<Mesh>(true)));
+                        if (m.enabled)
+                            ms.Add(m);
+                    }
+                    return ms;
+                }*/
         public void RenderMeshes(Scene scene)
         {
 
@@ -154,20 +156,21 @@ namespace Render3.Components
                 if (o.GetComponent<Mesh>() != null && o.GetComponent<Mesh>().enabled == true)
                     sceneMeshes.Add(o.GetComponent<Mesh>());
             }
-            orderedMeshes.Clear();
+            sortedTriangles.Clear();
             foreach (Mesh m in sceneMeshes)
+                foreach (Face f in m.geometry.triangles)
+                    sortedTriangles.Add(-TransformRelative(f.worldCenter).z,(m,f));
+
+            foreach (KeyValuePair<double, (Mesh, Face)> kv in sortedTriangles.Walk())
             {
-                int i = 0;
-                foreach (Mesh toCompare in orderedMeshes)
-                {
-                    if (TransformRelative(m.sceneObject.worldPosition).z > TransformRelative(toCompare.sceneObject.worldPosition).z) break;
-                    i++;
-                }
-                orderedMeshes.Insert(i, m);
-            }
-            foreach (Mesh m in orderedMeshes)
-            {
-                RenderFaces(scene, m);
+                Face f = kv.Value.Item2;
+                Mesh m = kv.Value.Item1;
+                //Face f = orderedTriangles[i];
+                //try
+                //{
+                Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
+                double color = ((f.worldNormal - (-scene.light.direction.normalized))).magnitude / 2;
+                renderer.DrawTriangle(vertices, Color.Merge(m.color, Color.Merge(new Color(1 - color, 1 - color, 1 - color), scene.light.color)));
             }
             err--;
             err = Math.Min(err, 0);

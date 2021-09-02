@@ -79,6 +79,10 @@
     <Compile Include="Async\Timer.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\Light.cs" />
+    <Compile Include="Core\Cache.cs" />
+    <Compile Include="Core\Nothing.cs" />
+    <Compile Include="Core\AutoSortElement.cs" />
+    <Compile Include="Core\Utils.cs" />
     <Compile Include="Core\Sorter.cs" />
     <Compile Include="Core\Tween.cs" />
     <Compile Include="Core\Color.cs" />
