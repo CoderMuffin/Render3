@@ -24,11 +24,10 @@ namespace Render3.Components
         int err = 0;
         public Dimensions2 screenSize { get { return ss; } set { ss = value; fov = fov; } }
         private Dimensions2 ss=new Dimensions2(100,100);
-        public int clipNear;
+        public double clipNear=0.1f;
         public CameraFovMode fovMode = CameraFovMode.Horizontal;
         private double afov; private double eyeDist;
         List<Mesh> sceneMeshes = new List<Mesh>();
-        List<Mesh> orderedMeshes = new List<Mesh>();
         Sorter<double, (Mesh, Face)> sortedTriangles = new Sorter<double, (Mesh, Face)>();
         private Point3 TransformRelative(Point3 toTransform)
         {
@@ -168,6 +167,7 @@ namespace Render3.Components
                 //Face f = orderedTriangles[i];
                 //try
                 //{
+                if (TransformRelative(f.worldCenter).z < clipNear) continue;
                 Point2[] vertices = { WorldToScreen(m.worldVertices[f.Vertices[0]]), WorldToScreen(m.worldVertices[f.Vertices[1]]), WorldToScreen(m.worldVertices[f.Vertices[2]]) };
                 double color = ((f.worldNormal - (-scene.light.direction.normalized))).magnitude / 2;
                 renderer.DrawTriangle(vertices, Color.Merge(m.color, Color.Merge(new Color(1 - color, 1 - color, 1 - color), scene.light.color)));

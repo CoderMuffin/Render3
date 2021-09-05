@@ -194,6 +194,7 @@ namespace Render3.Renderers
                     y0 += sy;
                 }
             }
+            Point2 utilP2;
             foreach (Point2 p in points)
             {
                 int tx0 = (int)p.x;
@@ -204,9 +205,12 @@ namespace Render3.Renderers
                     tx0 = tx1;
                     tx1 = tmp;
                 }
+                
                 for (int x = tx0; x < tx1; x++)
                 {
-                    if (InBounds(new Point2(x, p.y)))
+                    utilP2.x = x;
+                    utilP2.y = p.y;
+                    if (InBounds(utilP2))
                     {
                         screenArr[(int)p.y][x] = d;
                     }
