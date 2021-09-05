@@ -12,6 +12,7 @@ namespace Render3.Renderers
         Color[][] screenArr = new Color[0][];
         public Color lastColor;
         public bool gloriousTechnicolor;
+        StringBuilder s = new StringBuilder();
         public override void DrawTriangle(Point2[] vertices, Color c)
         {
             if (((int)renderMode & 2) != 0)
@@ -38,7 +39,7 @@ namespace Render3.Renderers
 
         public override void StopDrawing()
         {
-            StringBuilder s = new StringBuilder();
+            s.Clear();
 
             foreach (Color[] content in screenArr)
             {
