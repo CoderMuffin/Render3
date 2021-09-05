@@ -30,10 +30,16 @@ namespace Render3.Renderers
             if (screenArr.Length != (int)screenSize.height)
             {
                 screenArr = new Color[(int)screenSize.height][];
+
+                for (int index = 0; index < screenArr.Length; index++)
+                {
+                    screenArr[index] = new Color[(int)screenSize.width];
+                }
             }
+
             for (int index = 0; index < screenArr.Length; index++)
             {
-                screenArr[index] = new Color[(int)screenSize.width];
+                Array.Clear(screenArr[index],0,screenArr[index].Length);
             }
         }
 
